@@ -125,7 +125,7 @@ parameter shapes you have actually observed for your models, and pass
 probe                     one entry point for everything
 suite/                    knowledge benchmark, and the shared runner
 harness/                  geometry and jeep benchmarks: predicates, ladders, references
-assets/                   the terrain and the jeep, and the generator that makes them
+assets/                   the terrain, the jeep, and where each came from
 sources/                  dated snapshots of vendor documentation
 cases/                    task and item definitions
 adaptors/                 PhysX 5 for Apple Silicon
