@@ -187,7 +187,8 @@ docs/                     the long form for each benchmark
 ## Requirements
 
 Python 3.8 or later for everything. PyYAML to read the task files. A C++23
-compiler for the geometry benchmark, verified on Apple clang 21. Pillow is
+compiler for the geometry benchmark, verified on Apple clang 21 with libc++
+and on GCC with libstdc++. Pillow is
 optional and only converts frames for feedback. A built PhysX 5 for the jeep
 benchmark.
 

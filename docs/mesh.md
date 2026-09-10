@@ -111,8 +111,18 @@ much, and never how to fix it.
 
 ## Requirements
 
-A C++23 compiler. Verified on Apple clang 21 with `<print>`, ranges and
-views. Set `PROBE_CXX` to use a different one. PyYAML is needed to read the
+A C++23 compiler. Verified on Apple clang 21 with libc++, and on GCC with
+libstdc++ in continuous integration. Set `PROBE_CXX` to use a different one.
+`./probe doctor` checks for `<print>` and ranges, because a model may
+reasonably use them and a compiler that cannot would fail the submission
+rather than the model.
+
+Two standard libraries is not pedantry here. The first reference built
+happily on a Mac for weeks and did not compile on Linux at all: it used the
+initializer-list forms of `std::min` and `std::max` without including
+`<algorithm>`, which libc++ pulls in behind another header and libstdc++
+does not. Nothing in the mutation tests could have found that, because
+every mutant shared the bug. PyYAML is needed to read the
 task files, and Pillow is optional: without it the frame is still evaluated,
 it just is not converted to PNG for the feedback message.
 

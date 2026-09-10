@@ -1,6 +1,10 @@
 // Reference solution for mr-01. Its only job is to prove the harness can be
 // satisfied: if this does not reach rung 7, the task is unsatisfiable and the
 // benchmark is measuring the harness rather than the model.
+// <algorithm> for the initializer-list forms of std::min and std::max.
+// libc++ pulls it in behind another header, libstdc++ does not, so leaving
+// it out builds on a Mac and fails on Linux.
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstdint>
