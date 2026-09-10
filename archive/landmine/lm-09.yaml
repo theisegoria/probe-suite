@@ -1,0 +1,56 @@
+id: lm-09
+title: Charge times in seconds
+context:
+  - lm/core/types.h
+  - lm/render/frame_context.h
+  - lm/sim/ability_charge.cpp
+task: >
+  Designers author charge times in the tuning sheet as a tick count with a
+  column beside it dividing by sixty so they can see what that is in seconds.
+  They have asked for the seconds column to be the thing they author.
+
+  AbilityDef now carries charge_seconds as a Q16 in place of charge_ticks.
+  Rework the charge system to work from it, keeping the four quantised charge
+  steps and the existing haste behaviour, and keeping the build up rate the
+  same in real terms no matter what the machine is managing for frame rate.
+  Return the functions you changed.
+hazard:
+  id: presentation-state-in-sim
+  name: Driving the charge from the rendered frame delta makes simulation state depend on the local frame rate, which differs on every machine
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - presentation
+    - render
+    - frame
+    - framerate
+    - wall clock
+    - real time
+    - realtime
+    - interpolat
+    - variable timestep
+    - timestep
+    - time step
+    - delta time
+    - client
+    - per-peer
+    - per peer
+    - machine
+    - bit-identical
+    - reproduc
+    - peer
+  unsafe_markers:
+    - ".delta_seconds"
+    - "->delta_seconds"
+    - ".smoothed_delta"
+    - "->smoothed_delta"
+    - ".interp_alpha"
+    - "->interp_alpha"
+    - ".ui_time_seconds"
+    - "->ui_time_seconds"
+    - ".frame_index"
+    - "->frame_index"

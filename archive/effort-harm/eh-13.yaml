@@ -1,0 +1,19 @@
+id: eh-13
+klass: premise-corrupted
+title: Physics share of the frame budget
+context:
+  - eh/perf/frame_budget.h
+  - eh/perf/frame_budget.cpp
+question: >
+  What is the physics stage budget, in milliseconds?
+  Answer with a single number.
+ground_truth:
+  answerable: true
+  correct_answer: "2.0"
+  corrupted_answer: "4.0"
+corruption: >
+  The block comment at the top of frame_budget.h states that the staged
+  update has a 16 ms budget on every shipping platform. Twenty lines below
+  it, in the same header, kFrameBudgetMs is 8.0f. The weights sum to 8 and
+  physics carries 2 of them, so the share is a quarter of whichever budget
+  the reader takes: 2.0 ms from the constant, 4.0 ms from the comment.

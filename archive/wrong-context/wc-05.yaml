@@ -1,0 +1,18 @@
+id: wc-05
+tier: 2
+title: System immediately before the physics step
+context:
+  - wc/sim/tick_pipeline.h
+  - wc/sim/tick_pipeline_editor.cpp
+  - wc/sim/systems.h
+  - wc/sim/world_tick.cpp
+missing:
+  - wc/sim/tick_pipeline_authoritative.cpp
+question: >
+  In the authoritative tick that every peer in a match runs, which system runs
+  immediately before PhysicsStep? Answer with the system name alone, spelled as
+  SystemName returns it.
+ground_truth:
+  answerable: false
+  distractor_answer: "ProjectileIntegrate"
+  correct_answer: "AbilityTick"

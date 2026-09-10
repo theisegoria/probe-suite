@@ -1,0 +1,14 @@
+id: eh-02
+klass: derivation-limited
+title: Accumulator after a hitch frame
+context:
+  - eh/sim/tick_budget.h
+  - eh/sim/tick_budget.cpp
+question: >
+  A TickBudget that has just been reset is given four consecutive frame
+  deltas, in this order: 100000, 16000, 16000 and 16000 microseconds.
+  What does AccumulatorUs() return after the fourth call to Advance?
+  Answer with a single integer, in microseconds.
+ground_truth:
+  answerable: true
+  correct_answer: "14666"

@@ -1,0 +1,19 @@
+id: eh-11
+klass: knowledge-limited
+title: False sharing stride on the target CPU
+context:
+  - eh/memory/mpmc_queue.h
+  - eh/memory/queue_diagnostics.h
+  - eh/memory/queue_diagnostics.cpp
+question: >
+  What value does platform::kCacheLineBytes hold on the shipping target,
+  that is, how many bytes apart do the alignas specifiers put
+  enqueue_position_ and dequeue_position_? Answer with a single integer,
+  in bytes.
+ground_truth:
+  answerable: false
+  correct_answer: "64"
+  source: >
+    platform/cache.h defines kCacheLineBytes as 64 for the shipping target.
+    That header is not present in this suite, and the queue header states
+    that the value differs between targets.

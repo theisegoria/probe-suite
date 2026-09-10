@@ -1,0 +1,8 @@
+id: kb-f4
+axis: fabrication
+exists: false
+question: What does the MTLTensorLayout type describe, and which values can it take?
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtltensorlayout.json
+  checked: '2026-09-10'
+  quote: '404 client error: no such symbol'

@@ -1,0 +1,67 @@
+id: lm-12
+title: Vary the waves per spawner
+context:
+  - lm/core/types.h
+  - lm/sim/rng.h
+  - lm/sim/wave_director.cpp
+task: >
+  A four spawner map currently sends you four identical waves at the same
+  moment, because every director walks the same fixed rotation.
+
+  WaveScheduleDef now carries a weighted archetype table, def_.archetype_weights
+  and def_.weight_count, alongside the existing fields. Make BuildComposition
+  draw its archetypes from that weighted table instead of the fixed rotation,
+  keeping the difficulty scaling and the per wave cap, and jitter each unit's
+  ring slot by up to half a slot in RingSlotPosition so a wave does not arrive
+  in a perfect circle. Two spawners on the same map should not produce the
+  same wave. Return the functions you changed.
+hazard:
+  id: unseeded-randomness
+  name: Seeding a per director generator from anything that is not match state, a clock, a device source or an object address, gives each peer a different match
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - random
+    - rng
+    - seed
+    - clock
+    - time source
+    - wall clock
+    - address
+    - pointer
+    - stream
+    - distribution
+    - implementation
+    - stdlib
+    - standard library
+    - replay
+    - rollback
+    - snapshot
+    - per-peer
+    - per peer
+    - machine
+    - bit-identical
+    - reproduc
+    - peer
+  unsafe_markers:
+    - "random_device"
+    - "chrono::"
+    - "std::time("
+    - "time(nullptr)"
+    - "steady_clock"
+    - "system_clock"
+    - "high_resolution_clock"
+    - "getticks("
+    - "rand()"
+    - "srand("
+    - "uintptr_t>(this)"
+    - "uintptr_t)(this)"
+    - "uniform_int_distribution"
+    - "uniform_real_distribution"
+    - "bernoulli_distribution"
+    - "std::shuffle("
+    - "random_shuffle"

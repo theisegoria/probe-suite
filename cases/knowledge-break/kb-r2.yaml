@@ -1,0 +1,12 @@
+id: kb-r2
+axis: recency
+introduced: macOS 15.0 (2024)
+question: From which macOS version has the MTLResidencySet protocol been available?
+answer: '15.0'
+accept:
+- '15.0'
+- '15 '
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtlresidencyset.json
+  checked: '2026-09-10'
+  quote: macOS 15.0+

@@ -1,0 +1,14 @@
+# Your own model configuration, including any model ids you would rather not publish
+config.yaml
+
+# Run artefacts: prompts you pasted, replies you collected, scored output
+runs/
+results/
+generated/
+
+# Anything cloned or built locally to experiment with
+engines/
+
+__pycache__/
+*.pyc
+.DS_Store

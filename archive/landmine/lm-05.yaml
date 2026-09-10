@@ -1,0 +1,53 @@
+id: lm-05
+title: Split the bounty between contributors
+context:
+  - lm/core/types.h
+  - lm/sim/combat_ledger.cpp
+task: >
+  Right now the whole bounty goes to whoever landed the last hit, so a player
+  who softened a boss for twenty seconds gets nothing when a stray turret shot
+  finishes it. Design want the bounty shared out.
+
+  Change CombatLedger::OnActorKilled so that every entity that damaged the
+  victim inside the bounty window gets a share of the bounty in proportion to
+  the damage it dealt, each as its own award event through EmitAward. Gold is
+  whole numbers, so hand any remainder left by the division to the largest
+  contributor. Contributors are not only players: turrets, pets and summons
+  all deal damage and all have their own entity ids, and a big fight can leave
+  several dozen of them on one victim. Return the function or functions you
+  changed.
+hazard:
+  id: unordered-iteration
+  name: Aggregating contributions in a hash container makes the award order and the split depend on bucket layout, which differs between standard library builds
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - unordered
+    - hash
+    - bucket
+    - iteration
+    - order
+    - ordering
+    - insertion
+    - stdlib
+    - standard library
+    - implementation
+    - platform
+    - sort
+    - bit-identical
+    - reproduc
+    - peer
+  mitigating_markers: ["first touch", "first_touch", "arrival order", "std::sort", "ordered", "array"]
+  unsafe_markers:
+    - "unordered_map<"
+    - "unordered_set<"
+    - "flat_hash_map"
+    - "flat_hash_set"
+    - "hash_map<"
+    - "hash_set<"
+    - "robin_hood::"
+    - "ska::flat"

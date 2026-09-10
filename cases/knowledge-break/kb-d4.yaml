@@ -1,0 +1,17 @@
+id: kb-d4
+axis: depth
+depth_rung: 4
+introduced: macOS 15.0 (2024)
+question: You call addAllocation on a residency set and then requestResidency, but never call commit.
+  What happens to the allocations you added?
+answer: nothing, the change does not take effect until commit
+accept:
+- not take effect
+- no effect
+- not committed
+- until commit
+- does not apply
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtlresidencyset.json
+  checked: '2026-09-10'
+  quote: Changes to residency sets must be committed via the commit() method to take effect

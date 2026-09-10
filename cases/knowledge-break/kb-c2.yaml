@@ -1,0 +1,13 @@
+id: kb-c2
+axis: coverage
+introduced: macOS 26.0 (2025)
+question: Name the MTL4CommandBuffer method that resolves a counter heap, including all of its argument
+  labels.
+answer: resolveCounterHeap(_:range:buffer:fenceToWait:fenceToUpdate:)
+accept:
+- fencetowait
+- fencetoupdate
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4commandbuffer.json
+  checked: '2026-09-10'
+  quote: resolveCounterHeap(_:range:buffer:fenceToWait:fenceToUpdate:)

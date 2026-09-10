@@ -1,0 +1,16 @@
+id: wc-08
+tier: 2
+title: Wide row crossover on the handheld build
+context:
+  - wc/physics/island_dispatch.cpp
+  - wc/physics/solver_config.h
+  - wc/physics/solver_config_desktop.cpp
+missing:
+  - wc/physics/solver_config_handheld.cpp
+question: >
+  On the handheld build, how many bodies must an island contain before
+  ChooseSolvePath returns SolvePath::kWideRows?
+ground_truth:
+  answerable: false
+  distractor_answer: "32"
+  correct_answer: "128"

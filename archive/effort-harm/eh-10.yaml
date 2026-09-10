@@ -1,0 +1,16 @@
+id: eh-10
+klass: knowledge-limited
+title: Configured rollback window
+context:
+  - eh/core/ini.h
+  - eh/net/rollback_config.h
+  - eh/net/rollback_config.cpp
+question: >
+  How many ticks of rollback does the shipping build allow?
+  Answer with a single integer, in ticks.
+ground_truth:
+  answerable: false
+  correct_answer: "8"
+  source: >
+    net.rollback.max_ticks in config/net.ini, which is cooked into the
+    shipped package and is not present in this suite.

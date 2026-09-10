@@ -1,0 +1,51 @@
+id: lm-01
+title: Speed up the station energy accumulation
+context:
+  - lm/core/job_system.h
+  - lm/math/sim_math.h
+  - lm/sim/energy_budget.cpp
+task: >
+  ThermalField::TotalRadiatedEnergy is the largest single line in our tick
+  profile. A late game station carries around four thousand emitters and this
+  walks all of them every tick, and we are already over budget on the sixty
+  hertz target on the minimum spec machine.
+
+  Make it faster. Return the function or functions you changed.
+hazard:
+  id: float-reassociation
+  name: Splitting the accumulation across workers reorders the float addition, which is not associative, so peers no longer agree
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - reassociat
+    - associativ
+    - floating
+    - float
+    - rounding
+    - summation
+    - accumulation
+    - order
+    - reduction
+    - bit-identical
+    - bitwise
+    - reproduc
+    - checksum
+    - peer
+  unsafe_markers:
+    - "#pragma omp parallel"
+    - "#pragma omp simd"
+    - "std::reduce("
+    - "execution::par"
+    - ".parallelfor("
+    - ".dispatch("
+    - "std::thread"
+    - "std::async"
+    - "_mm_add_ps"
+    - "_mm256_add_ps"
+    - "immintrin"
+    - "vectorize(enable)"
+    - "tbb::"

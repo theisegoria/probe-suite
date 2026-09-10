@@ -1,0 +1,18 @@
+id: kb-v5
+axis: version-delta
+introduced: macOS 26.0 (2025)
+question: In Metal 4, which object do you call to submit command buffers for execution, and what
+  is the method called?
+answer: MTL4CommandQueue, commit(_:options:)
+accept:
+- mtl4commandqueue
+- command queue
+must_not_say:
+- mtlcommandbuffer.commit
+- commandbuffer.commit
+- on the command buffer
+- the command buffer's commit
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4commandqueue.json
+  checked: '2026-09-10'
+  quote: commit(_:options:) Enqueues an array of command buffers for execution with options

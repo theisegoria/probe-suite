@@ -1,0 +1,183 @@
+{
+ "domain": "metal",
+ "checked": "2026-09-10",
+ "sources": {
+  "feed": "https://developer.apple.com/tutorials/data/documentation/<framework>/<symbol>.json",
+  "whats_new": "https://developer.apple.com/metal/whats-new/"
+ },
+ "note": "Availability and member lists are read from Apple's documentation data feed. A 404 from that feed is proof a symbol does not exist, which is what the fabrication items rest on.",
+ "symbols": [
+  {
+   "name": "MTLArgumentEncoder",
+   "kind": "protocol",
+   "min_macos": "10.13",
+   "introduced": "macOS 10.13 (2017)",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtlargumentencoder.json",
+   "quote": "macOS 10.13+"
+  },
+  {
+   "name": "MTLResidencySet",
+   "kind": "protocol",
+   "min_macos": "15.0",
+   "introduced": "macOS 15.0 (2024)",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtlresidencyset.json",
+   "quote": "macOS 15.0+",
+   "members": [
+    {
+     "name": "commit()",
+     "does": "applies pending allocation changes"
+    },
+    {
+     "name": "requestResidency()",
+     "does": "requests residency for the allocations"
+    },
+    {
+     "name": "endResidency()",
+     "does": "releases the allocations from residency"
+    }
+   ]
+  },
+  {
+   "name": "MTL4CommandQueue",
+   "kind": "protocol",
+   "min_macos": "26.0",
+   "introduced": "macOS 26.0 (2025)",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtl4commandqueue.json",
+   "quote": "macOS 26.0+",
+   "members": [
+    {
+     "name": "commit(_:options:)",
+     "does": "enqueues an array of command buffers for execution with options"
+    },
+    {
+     "name": "signalEvent(_:value:)",
+     "does": "schedules an operation to signal a GPU event with a specific value"
+    },
+    {
+     "name": "addResidencySet(_:)",
+     "does": "applies a residency set to the queue"
+    }
+   ]
+  },
+  {
+   "name": "MTL4ArgumentTable",
+   "kind": "protocol",
+   "min_macos": "26.0",
+   "introduced": "macOS 26.0 (2025)",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtl4argumenttable.json",
+   "quote": "macOS 26.0+",
+   "members": [
+    {
+     "name": "setAddress(_:attributeStride:index:)",
+     "does": "binds a GPU address with a per-attribute stride"
+    },
+    {
+     "name": "setSamplerState(_:index:)",
+     "does": "binds a sampler state at an index"
+    }
+   ]
+  },
+  {
+   "name": "MTL4CommandBuffer",
+   "kind": "protocol",
+   "min_macos": "26.0",
+   "introduced": "macOS 26.0 (2025)",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtl4commandbuffer.json",
+   "quote": "macOS 26.0+",
+   "members": [
+    {
+     "name": "beginCommandBuffer(allocator:)",
+     "does": "begins encoding against a command allocator"
+    },
+    {
+     "name": "resolveCounterHeap(_:range:buffer:fenceToWait:fenceToUpdate:)",
+     "does": "resolves a counter heap into a buffer"
+    },
+    {
+     "name": "makeMachineLearningCommandEncoder()",
+     "does": "creates a machine learning command encoder"
+    }
+   ]
+  },
+  {
+   "name": "MTL4CommandAllocator",
+   "kind": "protocol",
+   "min_macos": "26.0",
+   "introduced": "macOS 26.0 (2025)",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtl4commandallocator.json",
+   "quote": "Manages the memory backing the encoding of GPU commands into command buffers.",
+   "members": [
+    {
+     "name": "reset()",
+     "does": "marks the allocator's heaps for reuse"
+    },
+    {
+     "name": "allocatedSize()",
+     "does": "queries the size of the internal memory heaps"
+    }
+   ]
+  },
+  {
+   "name": "MTL4Compiler",
+   "kind": "protocol",
+   "min_macos": "26.0",
+   "introduced": "macOS 26.0 (2025)",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtl4compiler.json",
+   "quote": "macOS 26.0+",
+   "members": [
+    {
+     "name": "makeRenderPipelineStateBySpecialization(descriptor:pipeline:)",
+     "does": "creates a render pipeline state from another, previously unspecialized pipeline state"
+    },
+    {
+     "name": "makeMachineLearningPipelineState(descriptor:)",
+     "does": "creates a machine learning pipeline state"
+    }
+   ]
+  },
+  {
+   "name": "MTLTensor",
+   "kind": "protocol",
+   "min_macos": "26.0",
+   "introduced": "macOS 26.0 (2025)",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtltensor.json",
+   "quote": "A resource representing a multi-dimensional array that you can use with machine learning workloads."
+  },
+  {
+   "name": "MTLFXTemporalDenoisedScaler",
+   "kind": "protocol",
+   "min_macos": "26.0",
+   "introduced": "macOS 26.0 (2025)",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metalfx/mtlfxtemporaldenoisedscaler.json",
+   "quote": "macOS 26.0+ (note iOS 18.0+, the platforms do not agree)"
+  },
+  {
+   "exists": false,
+   "name": "MTL4DescriptorHeap",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtl4descriptorheap.json",
+   "quote": "404 client error: no such symbol",
+   "question": "What does the MTL4DescriptorHeap protocol do, and how do you allocate from it?"
+  },
+  {
+   "exists": false,
+   "name": "MTL4ResourceBarrier",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtl4resourcebarrier.json",
+   "quote": "404 client error: no such symbol",
+   "question": "Describe the MTL4ResourceBarrier type and the stages you can specify on it."
+  },
+  {
+   "exists": false,
+   "name": "MTL4PipelineLibrary",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtl4pipelinelibrary.json",
+   "quote": "404 client error: no such symbol",
+   "question": "What is MTL4PipelineLibrary used for, and how does it differ from MTLLibrary?"
+  },
+  {
+   "exists": false,
+   "name": "MTLTensorLayout",
+   "url": "https://developer.apple.com/tutorials/data/documentation/metal/mtltensorlayout.json",
+   "quote": "404 client error: no such symbol",
+   "question": "What does the MTLTensorLayout type describe, and which values can it take?"
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+id: eh-04
+klass: derivation-limited
+title: Accumulated normal impulse after three iterations
+context:
+  - eh/math/scalar.h
+  - eh/physics/contact_solver.h
+  - eh/physics/contact_solver.cpp
+question: >
+  Body A is static, with inverse_mass 0. Body B has inverse_mass 0.5 and
+  linear_velocity (0, -4.35, 0). The contact normal is (0, 1, 0), its
+  penetration is 0.065 metres, and it carries a normal_impulse of 1.5 from
+  the previous tick. B has restitution 0.2. SolveContact is called with
+  dt = 0.02. What is the contact normal_impulse when SolveContact returns?
+  Answer with a single number.
+ground_truth:
+  answerable: true
+  correct_answer: "8.5"

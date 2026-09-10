@@ -1,0 +1,20 @@
+id: eh-16
+klass: premise-corrupted
+title: Latency the input window absorbs
+context:
+  - eh/rollback/tick_clock.h
+  - eh/rollback/input_window.h
+  - eh/rollback/input_window.cpp
+question: >
+  What does AbsorbableMilliseconds() return?
+  Answer with a single number, in milliseconds.
+ground_truth:
+  answerable: true
+  correct_answer: "240"
+  corrupted_answer: "200"
+corruption: >
+  The block comment at the top of tick_clock.h states that the simulation
+  ticks at 60 Hz, one tick every 16667 microseconds. Twenty lines below it,
+  in the same header, kTickPeriodUs is 20000, which is 50 Hz. The window is
+  2 delay ticks plus 10 rollback ticks, so 12 ticks is 240 ms at the real
+  period and just over 200 ms at the period the comment claims.

@@ -1,0 +1,16 @@
+id: wc-04
+tier: 1
+title: Penetration allowed into the Baumgarte bias
+context:
+  - wc/physics/position_bias.cpp
+  - wc/physics/character_limits.h
+missing:
+  - wc/physics/solver_limits.h
+question: >
+  A rigid body contact reports 0.40 metres of penetration. What value, in
+  metres, does ComputeBias hold in its local variable corrected, that is, what
+  does ClampPenetration(0.40f) return?
+ground_truth:
+  answerable: false
+  distractor_answer: "0.25"
+  correct_answer: "0.08"

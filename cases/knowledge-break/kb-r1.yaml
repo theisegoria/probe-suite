@@ -1,0 +1,11 @@
+id: kb-r1
+axis: recency
+introduced: macOS 10.13 (2017)
+question: From which macOS version has the MTLArgumentEncoder protocol been available?
+answer: '10.13'
+accept:
+- '10.13'
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtlargumentencoder.json
+  checked: '2026-09-10'
+  quote: macOS 10.13+

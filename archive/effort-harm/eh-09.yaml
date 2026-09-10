@@ -1,0 +1,19 @@
+id: eh-09
+klass: knowledge-limited
+title: Solver iterations left at the vendor default
+context:
+  - eh/core/cvar.h
+  - eh/physics/vendor_bridge.h
+  - eh/physics/vendor_bridge.cpp
+question: >
+  In the shipping build physics.ragdoll.position_iterations is left at the
+  value it was declared with. How many position solver iterations does a
+  ragdoll body created by CreateRagdollBody actually run with?
+  Answer with a single integer.
+ground_truth:
+  answerable: false
+  correct_answer: "4"
+  source: >
+    The PhysX 5 default position solver iteration count on a newly created
+    dynamic actor. The bridge never sets it, so the SDK default stands, and
+    the SDK is not part of this suite.

@@ -1,0 +1,15 @@
+id: wc-01
+tier: 1
+title: Splash damage at three metres
+context:
+  - wc/combat/splash_damage.cpp
+  - wc/combat/suppression_tuning.h
+missing:
+  - wc/combat/splash_tuning.h
+question: >
+  A grenade with base damage 200 detonates 3.0 metres from a target.
+  What value does SplashDamageAt(200.0f, 3.0f) return?
+ground_truth:
+  answerable: false
+  distractor_answer: "182"
+  correct_answer: "128"

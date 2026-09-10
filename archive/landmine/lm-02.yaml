@@ -1,0 +1,59 @@
+id: lm-02
+title: Cheapen the chunk mass property recompute
+context:
+  - lm/core/job_system.h
+  - lm/math/sim_math.h
+  - lm/physics/mass_properties.cpp
+task: >
+  RecomputeMassProperties runs for every live chunk every tick. Once a
+  building has been shelled into two or three hundred chunks it is about four
+  percent of the whole physics budget, and the artists want to raise the cell
+  count per chunk again next milestone.
+
+  Make it cheaper. Return the function or functions you changed.
+hazard:
+  id: float-reassociation
+  name: Vectorising the mass and inertia sums reorders the float addition, so the tensor differs across peers and across builds
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - reassociat
+    - associativ
+    - floating
+    - float
+    - rounding
+    - summation
+    - accumulation
+    - order
+    - reduction
+    - simd
+    - vectoris
+    - vectoriz
+    - horizontal
+    - bit-identical
+    - bitwise
+    - reproduc
+    - checksum
+    - peer
+  unsafe_markers:
+    - "_mm_add_ps"
+    - "_mm256_add_ps"
+    - "_mm_hadd_ps"
+    - "_mm256_hadd_ps"
+    - "_mm_fmadd_ps"
+    - "_mm256_fmadd_ps"
+    - "immintrin"
+    - "xmmintrin"
+    - "float32x4_t"
+    - "vaddq_f32"
+    - "#pragma omp parallel"
+    - "#pragma omp simd"
+    - "vectorize(enable)"
+    - "std::reduce("
+    - "execution::par"
+    - ".parallelfor("
+    - ".dispatch("

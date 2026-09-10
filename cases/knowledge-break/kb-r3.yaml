@@ -1,0 +1,12 @@
+id: kb-r3
+axis: recency
+introduced: macOS 26.0 (2025)
+question: From which macOS version has the MTL4CommandQueue protocol been available?
+answer: '26.0'
+accept:
+- '26.0'
+- '26 '
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4commandqueue.json
+  checked: '2026-09-10'
+  quote: macOS 26.0+

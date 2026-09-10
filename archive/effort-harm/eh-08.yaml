@@ -1,0 +1,19 @@
+id: eh-08
+klass: knowledge-limited
+title: Groupshared ceiling for the target profile
+context:
+  - eh/render/lds_reduce.hlsl
+  - eh/render/lds_reduce_dispatch.h
+  - eh/render/lds_reduce_dispatch.cpp
+question: >
+  The team wants to raise TILE_DIM, and the groupshared allocation is the
+  bound that will stop them first. How many bytes of groupshared memory may
+  a single thread group declare under the target profile, cs_6_0?
+  Answer with a single integer, in bytes.
+ground_truth:
+  answerable: false
+  correct_answer: "32768"
+  source: >
+    The Direct3D shader model 6 limit on total group shared memory per thread
+    group. It is a property of the target profile and appears nowhere in the
+    supplied files.

@@ -1,0 +1,15 @@
+id: eh-12
+klass: knowledge-limited
+title: Anisotropy on the default constructed sampler
+context:
+  - eh/render/sampler_cache.h
+  - eh/render/sampler_cache.cpp
+question: >
+  What MaxAnisotropy does the static sampler at register s3, the material
+  sampler, end up with? Answer with a single integer.
+ground_truth:
+  answerable: false
+  correct_answer: "16"
+  source: >
+    The MaxAnisotropy default on CD3DX12_STATIC_SAMPLER_DESC in d3dx12.h.
+    That helper header is not present in this suite.

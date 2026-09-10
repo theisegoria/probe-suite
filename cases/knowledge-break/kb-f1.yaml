@@ -1,0 +1,8 @@
+id: kb-f1
+axis: fabrication
+exists: false
+question: What does the MTL4DescriptorHeap protocol do, and how do you allocate from it?
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4descriptorheap.json
+  checked: '2026-09-10'
+  quote: '404 client error: no such symbol'

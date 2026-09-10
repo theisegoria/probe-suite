@@ -1,0 +1,17 @@
+id: kb-v1
+axis: version-delta
+introduced: macOS 26.0 (2025)
+question: In Metal 4, which protocol manages the memory backing the encoding of GPU commands into
+  command buffers? Give the type name.
+answer: MTL4CommandAllocator
+accept:
+- mtl4commandallocator
+- command allocator
+must_not_say:
+- mtlcommandbuffer
+- mtlcommandqueue
+- mtlheap
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4commandallocator.json
+  checked: '2026-09-10'
+  quote: Manages the memory backing the encoding of GPU commands into command buffers.

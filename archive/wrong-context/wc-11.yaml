@@ -1,0 +1,17 @@
+id: wc-11
+tier: 3
+title: Stage after the remote input pass
+context:
+  - wc/net/session.cpp
+  - wc/net/net_tick_v1.cpp
+missing:
+  - wc/net/net_tick.cpp
+  - wc/net/net_tick.h
+question: >
+  Session::TickNetwork runs one network tick during a live match. In that
+  tick's stage order, which stage runs immediately after ApplyRemoteInputs?
+  Answer with the stage function name alone.
+ground_truth:
+  answerable: false
+  distractor_answer: "RewindAndResimulate"
+  correct_answer: "ApplySnapshot"

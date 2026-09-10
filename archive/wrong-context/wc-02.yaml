@@ -1,0 +1,16 @@
+id: wc-02
+tier: 1
+title: Round trip time at which rollback engages
+context:
+  - wc/net/lag_policy.cpp
+  - wc/net/relay_policy.h
+missing:
+  - wc/net/rollback_policy.h
+question: >
+  A client is sitting in the input delay policy and its link is degrading.
+  At what smoothed round trip time, in milliseconds, does LagPolicy::Evaluate
+  move it to rollback?
+ground_truth:
+  answerable: false
+  distractor_answer: "180"
+  correct_answer: "220"

@@ -1,0 +1,15 @@
+id: kb-d3
+axis: depth
+depth_rung: 3
+introduced: macOS 15.0 (2024)
+question: Do residency sets provide hazard tracking for the allocations they contain? Answer yes
+  or no and say what you must use instead if not.
+answer: no, use fences and events
+accept:
+- 'no'
+- fence
+- event
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtlresidencyset.json
+  checked: '2026-09-10'
+  quote: they don't support hazard tracking, requiring you to manage hazards with fences and events

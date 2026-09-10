@@ -1,0 +1,16 @@
+id: kb-v4
+axis: version-delta
+introduced: macOS 26.0 (2025)
+question: MTL4CommandBuffer requires a call before you encode into it that has no counterpart on
+  MTLCommandBuffer. Name that method, including its argument label.
+answer: beginCommandBuffer(allocator:)
+accept:
+- begincommandbuffer
+must_not_say:
+- no counterpart
+- none
+- there is no such
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4commandbuffer.json
+  checked: '2026-09-10'
+  quote: beginCommandBuffer(allocator:)

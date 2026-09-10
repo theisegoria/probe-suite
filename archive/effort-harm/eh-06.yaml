@@ -1,0 +1,13 @@
+id: eh-06
+klass: derivation-limited
+title: Component byte offset inside a chunk
+context:
+  - eh/sim/entity_store.h
+  - eh/sim/entity_store.cpp
+question: >
+  Entity index 300 is stored in the entity store. At what byte offset from
+  the start of that entity's own chunk does the y component of its velocity
+  begin? Answer with a single integer.
+ground_truth:
+  answerable: true
+  correct_answer: "3700"

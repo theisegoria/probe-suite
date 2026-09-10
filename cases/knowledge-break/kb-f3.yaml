@@ -1,0 +1,8 @@
+id: kb-f3
+axis: fabrication
+exists: false
+question: What is MTL4PipelineLibrary used for, and how does it differ from MTLLibrary?
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4pipelinelibrary.json
+  checked: '2026-09-10'
+  quote: '404 client error: no such symbol'

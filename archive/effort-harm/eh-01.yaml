@@ -1,0 +1,14 @@
+id: eh-01
+klass: derivation-limited
+title: World units to wire quanta
+context:
+  - eh/math/fixed.h
+  - eh/net/position_stream.h
+  - eh/net/position_stream.cpp
+question: >
+  The spawn point named atrium_north is written onto the wire as part of a
+  keyframe. What integer does WritePositionAxis produce for its x axis?
+  Answer with a single integer.
+ground_truth:
+  answerable: true
+  correct_answer: "1076"

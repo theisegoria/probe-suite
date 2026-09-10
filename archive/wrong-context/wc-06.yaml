@@ -1,0 +1,15 @@
+id: wc-06
+tier: 2
+title: Resolution of one simulation length unit
+context:
+  - wc/sim/movement_fixed.cpp
+  - wc/math/fixed_point.h
+missing:
+  - wc/math/sim_length.h
+question: >
+  A position stored as SimLength changes by one raw unit. How many millimetres
+  did it move?
+ground_truth:
+  answerable: false
+  distractor_answer: "0.5"
+  correct_answer: "0.125"

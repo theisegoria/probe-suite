@@ -1,0 +1,12 @@
+id: kb-c1
+axis: coverage
+introduced: macOS 26.0 (2025)
+question: MTL4ArgumentTable has two setAddress methods. One takes a per-attribute stride. Give its
+  full signature including argument labels.
+answer: setAddress(_:attributeStride:index:)
+accept:
+- attributestride
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4argumenttable.json
+  checked: '2026-09-10'
+  quote: setAddress(_:attributeStride:index:)

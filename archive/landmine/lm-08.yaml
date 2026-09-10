@@ -1,0 +1,59 @@
+id: lm-08
+title: Cheapen the weapon heat curve
+context:
+  - lm/math/sim_math.h
+  - lm/sim/weapon_heat.cpp
+task: >
+  EvalHeatCurve is the second largest line in the combat profile after the
+  projectile integrator. WeaponHeatSystem::Tick runs for every equipped weapon
+  every tick, around six hundred of them in a late game fight, and each one
+  goes through the curve three times.
+
+  Make it cheaper. Return the function or functions you changed.
+hazard:
+  id: fma-contraction
+  name: Letting the compiler fuse the multiply and add in the polynomial changes the rounding, so results vary with the target and the optimisation settings
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - fma
+    - fused
+    - fusion
+    - contract
+    - rounding
+    - rounded
+    - floating
+    - precision
+    - platform
+    - portab
+    - intrinsic
+    - optimisation level
+    - optimization level
+    - compiler
+    - fast math
+    - fast-math
+    - bit-identical
+    - reproduc
+    - peer
+  unsafe_markers:
+    - "std::fma("
+    - "fmaf("
+    - "__builtin_fma"
+    - "fp contract(fast)"
+    - "fp contract(on)"
+    - "ffp-contract=fast"
+    - "ffp-contract=on"
+    - "fp_contract on"
+    - "ffast-math"
+    - "-ofast"
+    - 'optimize("fast'
+    - 'optimize("-ffast'
+    - "float_control(precise, off)"
+    - "float_control(precise,off)"
+    - "_mm_fmadd"
+    - "_mm256_fmadd"
+    - "vfmaq"

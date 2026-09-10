@@ -1,0 +1,13 @@
+id: kb-c3
+axis: coverage
+introduced: macOS 26.0 (2025)
+question: MTL4Compiler can build a render pipeline state from another, previously unspecialized pipeline
+  state. Name that method.
+answer: makeRenderPipelineStateBySpecialization(descriptor:pipeline:)
+accept:
+- byspecialization
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4compiler.json
+  checked: '2026-09-10'
+  quote: makeRenderPipelineStateBySpecialization(descriptor:pipeline:) Creates a new render pipeline
+    state from another, previously unspecialized pipeline state

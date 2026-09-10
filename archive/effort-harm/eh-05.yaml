@@ -1,0 +1,13 @@
+id: eh-05
+klass: derivation-limited
+title: Specular antialiasing mip selection
+context:
+  - eh/render/brdf_common.hlsli
+  - eh/render/specular_filter.hlsl
+question: >
+  A shaded point has perceptual_roughness 0.4 and normal_variance 0.03.
+  What value does SelectSpecularMip return for it?
+  Answer with a single number.
+ground_truth:
+  answerable: true
+  correct_answer: "4.25"

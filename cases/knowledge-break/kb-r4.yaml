@@ -1,0 +1,13 @@
+id: kb-r4
+axis: recency
+introduced: 2026 announcements
+question: Apple's redesigned MetalFX temporal upscaler uses the Neural Engine together with Neural
+  Accelerators. On which two Apple silicon chips does Apple say those Neural Accelerators are available?
+answer: M5 Pro and M5 Max
+accept:
+- m5 pro
+- m5 max
+source:
+  url: https://developer.apple.com/metal/whats-new/
+  checked: '2026-09-10'
+  quote: Utilizes both Neural Engine and Neural Accelerators on M5 Pro and M5 Max

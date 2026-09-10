@@ -1,0 +1,14 @@
+id: eh-03
+klass: derivation-limited
+title: Falloff and armour multipliers
+context:
+  - eh/math/scalar.h
+  - eh/combat/damage_falloff.h
+  - eh/combat/damage_falloff.cpp
+question: >
+  A breach_charge hit lands 5.0 metres from a target whose armour_rating is
+  20.0 and whose is_shielded flag is false. What does ResolveHit return for
+  that hit? Answer with a single integer.
+ground_truth:
+  answerable: true
+  correct_answer: "48"

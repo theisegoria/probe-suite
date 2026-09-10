@@ -1,0 +1,17 @@
+id: wc-07
+tier: 2
+title: Sky probe mip for roughness one half
+context:
+  - wc/render/ibl_prefilter.h
+  - wc/render/ibl_prefilter.cpp
+  - wc/render/split_sum.hlsl
+missing:
+  - wc/render/sky_prefilter.cpp
+question: >
+  A surface with perceptual roughness 0.5 takes its specular image based
+  lighting from the sky probe. What mip level does SpecularIbl sample from the
+  sky probe's prefiltered cube?
+ground_truth:
+  answerable: false
+  distractor_answer: "3.5"
+  correct_answer: "2.5"

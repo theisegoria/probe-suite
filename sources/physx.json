@@ -1,0 +1,548 @@
+{
+ "domain": "physx",
+ "checked": "2026-09-10",
+ "sources": {
+  "4.1": "https://nvidiagameworks.github.io/PhysX/4.1/documentation/physxguide/Manual/Vehicles.html",
+  "5.3": "https://nvidia-omniverse.github.io/PhysX/physx/5.3.1/docs/Vehicles.html"
+ },
+ "note": "Vehicle API only. A symbol absent from this index is not proof it does not exist in PhysX; it is proof it does not appear in the vehicle documentation for that version.",
+ "symbols": {
+  "PxVehicleDrive4W": {
+   "versions": [
+    "4.1",
+    "5.3"
+   ],
+   "deprecated_in": "5.3"
+  },
+  "PxVehicleDriveNW": {
+   "versions": [
+    "4.1",
+    "5.3"
+   ],
+   "deprecated_in": "5.3"
+  },
+  "PxVehicleDriveTank": {
+   "versions": [
+    "4.1",
+    "5.3"
+   ],
+   "deprecated_in": "5.3"
+  },
+  "PxVehicleNoDrive": {
+   "versions": [
+    "4.1",
+    "5.3"
+   ],
+   "deprecated_in": "5.3"
+  },
+  "PxVehicleWheels": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleWheelsSimData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleDriveSimData4W": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleWheelData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleTireData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleSuspensionData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleEngineData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleGearsData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleClutchData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleChassisData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleAckermannGeometryData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleDifferential4WData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleDifferentialNWData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleTireLoadFilterData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleDrivableSurfaceToTireFrictionPairs": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleWheelsDynData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleDriveDynData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleTelemetryData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleDrive4WRawInputData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleDriveTankRawInputData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxWheelQueryResult": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleWheelQueryResult": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxInitVehicleSDK": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxCloseVehicleSDK": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleSetBasisVectors": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleSetUpdateMode": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleSuspensionRaycasts": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleUpdates": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleUpdateSingleVehicleAndStoreTelemetryData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehiclePostUpdates": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleComputeSprungMasses": {
+   "versions": [
+    "4.1",
+    "5.3"
+   ]
+  },
+  "PxVehicleSetMaxHitActorAcceleration": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleCopyDynamicsData": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicle4WEnable3WTadpoleMode": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicle4WEnable3WDeltaMode": {
+   "versions": [
+    "4.1"
+   ]
+  },
+  "PxVehicleCommandState": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleDirectDriveTransmissionCommandState": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleEngineDriveTransmissionCommandState": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleTankDriveTransmissionCommandState": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleComponentSequence": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleArrayData": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleSizedArrayData": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehiclePhysXActorBeginComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehiclePhysXActorEndComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehiclePhysXConstraintComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehiclePhysXRoadGeometrySceneQueryComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleSimulationContext": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehiclePhysXSimulationContext": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleBrakeCommandResponseParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleSteerCommandResponseParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleAckermannParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleWheelParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleSuspensionParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleSuspensionStateCalculationParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleSuspensionComplianceParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleSuspensionForceParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleAntiRollBar": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleTireForceParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleRigidBodyParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleDirectDriveThrottleCommandResponseParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleEngineParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleGearboxParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleAutoboxParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleClutchCommandResponseParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleClutchParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleMultiWheelDriveDifferentialParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleFourWheelDriveDifferentialParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleTankDriveDifferentialParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleRoadGeometryState": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleWheelActuationState": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleTireStickyState": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleTireSlipParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleTireStickyParams": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleAxleDescription": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleSuspensionComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleTireComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleDirectDriveCommandResponseComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleEngineDriveCommandResponseComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleDirectDriveActuationStateComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleEngineDriveActuationStateComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleMultiWheelDriveDifferentialComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleFourWheelDriveDifferentialComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleTankDriveDifferentialComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleDirectDrivetrainComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleEngineDrivetrainComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleRigidBodyComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleWheelComponent": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehiclePhysXActorCreate": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehiclePhysXActorConfigure": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehiclePhysXArticulationLinkCreate": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehiclePhysXActorDestroy": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleConstraintsCreate": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleConstraintsDestroy": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleUnitCylinderSweepMeshCreate": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleUnitCylinderSweepMeshDestroy": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleAccelerationIntentCompute": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleTireStickyStateReset": {
+   "versions": [
+    "5.3"
+   ]
+  },
+  "PxVehicleLegacySuspensionComponent": {
+   "versions": [
+    "5.3"
+   ],
+   "deprecated_in": "5.3"
+  },
+  "PxVehicleLegacyTireComponent": {
+   "versions": [
+    "5.3"
+   ],
+   "deprecated_in": "5.3"
+  },
+  "PxVehicleLegacyFourWheelDriveDifferentialStateComponent": {
+   "versions": [
+    "5.3"
+   ],
+   "deprecated_in": "5.3"
+  }
+ }
+}

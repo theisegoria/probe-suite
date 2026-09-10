@@ -1,0 +1,39 @@
+# Model configuration.
+#
+# Vendors rename effort parameters and change their vocabularies, so nothing
+# about a model's API shape is hardcoded in the harness. Each entry gives the
+# model id and, for every effort level you want to sweep, the exact keyword
+# arguments to pass. Adding a model or following a renamed parameter is an
+# edit here, not a code change.
+#
+# Copy to config.yaml and fill in the parameter shapes you have actually
+# observed for your models. If you have not observed one, use the manual
+# adapter, which needs no API at all.
+
+models:
+
+  # Manual administration. Nothing to configure: the harness writes prompts
+  # to runs/<tag>/ and reads your pasted replies back from the same folder.
+  paste:
+    model: paste
+
+  # Example shape only. Confirm the parameter names against your own account
+  # before trusting a sweep run through them.
+  example-anthropic:
+    model: claude-example-model-id
+    max_tokens: 4096
+    effort_params:
+      low:     {thinking: {type: enabled, budget_tokens: 2000}}
+      medium:  {thinking: {type: enabled, budget_tokens: 8000}}
+      high:    {thinking: {type: enabled, budget_tokens: 24000}}
+      xhigh:   {thinking: {type: enabled, budget_tokens: 64000}}
+      max:     {thinking: {type: enabled, budget_tokens: 128000}}
+
+  example-openai:
+    model: gpt-example-model-id
+    effort_params:
+      low:     {reasoning_effort: low}
+      medium:  {reasoning_effort: medium}
+      high:    {reasoning_effort: high}
+      xhigh:   {reasoning_effort: xhigh}
+      max:     {reasoning_effort: max}

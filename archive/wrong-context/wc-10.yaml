@@ -1,0 +1,17 @@
+id: wc-10
+tier: 3
+title: Critical hit through armour
+context:
+  - wc/combat/hit_pipeline.cpp
+  - wc/combat/resolve_hit_v1.cpp
+missing:
+  - wc/combat/resolve_hit.h
+  - wc/combat/resolve_hit.cpp
+question: >
+  ResolveConfirmedHit builds a HitInput with base_damage 100 after range
+  falloff, is_critical true, armour_fraction 0.25, and an instigator and victim
+  on different teams. What value does final_damage hold?
+ground_truth:
+  answerable: false
+  distractor_answer: "150"
+  correct_answer: "112.5"

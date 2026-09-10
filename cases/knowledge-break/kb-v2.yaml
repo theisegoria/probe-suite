@@ -1,0 +1,18 @@
+id: kb-v2
+axis: version-delta
+introduced: macOS 26.0 (2025)
+question: In Metal 4, which protocol provides resource bindings for buffers, textures and sampler
+  states to a shader? Give the type name.
+answer: MTL4ArgumentTable
+accept:
+- mtl4argumenttable
+- argument table
+must_not_say:
+- mtlargumentencoder
+- argument buffer
+- argument encoder
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4argumenttable.json
+  checked: '2026-09-10'
+  quote: Provides a mechanism to manage and provide resource bindings for buffers, textures, sampler
+    states and other Metal resources.

@@ -1,0 +1,21 @@
+id: eh-17
+klass: premise-corrupted
+title: Value stored in the stage elapsed field
+context:
+  - eh/profiling/stage_timer.h
+  - eh/profiling/stage_timer.cpp
+question: >
+  The physics stage runs for 8750000 cycles of the invariant counter in one
+  frame. What value does EndStage store in that stage's elapsed_ms field?
+  Answer with a single number.
+ground_truth:
+  answerable: true
+  correct_answer: "0.0025"
+  corrupted_answer: "2.5"
+corruption: >
+  The field is named elapsed_ms and the comment on it in stage_timer.h says
+  it holds the wall time the stage consumed in milliseconds. EndStage
+  assigns the cycle count multiplied by kSecondsPerCycle, which is the
+  reciprocal of kCyclesPerSecond, so the field holds seconds. At 3.5e9
+  cycles per second, 8750000 cycles is 0.0025 stored, and 2.5 is the figure
+  in the unit the name and the comment promise.

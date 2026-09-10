@@ -1,0 +1,15 @@
+id: eh-07
+klass: knowledge-limited
+title: Worker threads on the shipping target
+context:
+  - eh/jobs/worker_pool.h
+  - eh/jobs/worker_pool.cpp
+question: >
+  How many worker threads does WorkerPool::Start bring up on the shipping
+  target? Answer with a single integer.
+ground_truth:
+  answerable: false
+  correct_answer: "6"
+  source: >
+    platform::kPhysicalCoreCount is 8 on the shipping target, defined in
+    platform/cpu_topology.h, which is not present in this suite.

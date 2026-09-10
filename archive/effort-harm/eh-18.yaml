@@ -1,0 +1,22 @@
+id: eh-18
+klass: premise-corrupted
+title: Chunks needed to cover the index space
+context:
+  - eh/entity/handle.h
+  - eh/entity/handle_store.h
+  - eh/entity/handle_store.cpp
+question: >
+  kMaxChunks is sized so that the chunk pointer table covers every slot
+  index a handle can name. What is its value?
+  Answer with a single integer.
+ground_truth:
+  answerable: true
+  correct_answer: "128"
+  corrupted_answer: "2048"
+corruption: >
+  The block comment at the top of handle.h says a handle packs a slot index
+  in the low 20 bits and a generation counter in the high 12, and that a
+  store can therefore address 1048576 live entities. Twenty lines below it,
+  in the same header, kIndexBits and kGenerationBits are both 16, so the
+  index space is 65536. At 512 slots per chunk that is 128 chunks, against
+  2048 for the index space the comment claims.

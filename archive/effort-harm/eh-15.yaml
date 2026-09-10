@@ -1,0 +1,22 @@
+id: eh-15
+klass: premise-corrupted
+title: Mip level for the split sum lookup
+context:
+  - eh/shading/ibl_common.hlsli
+  - eh/shading/ibl_specular.hlsl
+question: >
+  What mip level does SelectIblMip return for a perceptual roughness of 0.5?
+  Answer with a single number.
+ground_truth:
+  answerable: true
+  correct_answer: "8"
+  corrupted_answer: "4"
+corruption: >
+  The doc comment on RoughnessToMipFactor says the function returns a mip
+  factor normalised to the range zero to one and that the caller scales it
+  by the number of mip steps. The body, one line below the comment, returns
+  perceptual_roughness times (kIblMipCount - 1), which is already an
+  absolute mip level. SelectIblMip then scales it by (kIblMipCount - 1) a
+  second time, so the product is 32 and the min clamps it to 8. A reader who
+  takes the comment at its word gets 0.5 scaled once, which is 4, and sees
+  the min do nothing.

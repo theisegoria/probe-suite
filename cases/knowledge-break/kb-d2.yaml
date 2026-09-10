@@ -1,0 +1,12 @@
+id: kb-d2
+axis: depth
+depth_rung: 2
+introduced: macOS 15.0 (2024)
+question: Which method on MTLResidencySet applies pending allocation changes? Give the method name.
+answer: commit()
+accept:
+- commit
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtlresidencyset.json
+  checked: '2026-09-10'
+  quote: 'Finalizing pending allocation changes: commit()'

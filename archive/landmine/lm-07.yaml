@@ -1,0 +1,62 @@
+id: lm-07
+title: Speed up the projectile integrator
+context:
+  - lm/core/cpu_features.h
+  - lm/math/sim_math.h
+  - lm/sim/ballistics.cpp
+task: >
+  ProjectileSystem::IntegrateProjectiles is the hottest function in the
+  simulation. A late game siege keeps around two thousand projectiles in the
+  air and this is roughly six percent of the tick, most of it in StepOne.
+
+  Make it faster. Return the function or functions you changed.
+hazard:
+  id: fma-contraction
+  name: Fusing the multiply and the add changes the rounding, so a machine that takes the fused path disagrees with one that does not
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - fma
+    - fused
+    - fusion
+    - contract
+    - rounding
+    - rounded
+    - floating
+    - precision
+    - platform
+    - portab
+    - instruction set
+    - intrinsic
+    - instruction
+    - simd
+    - vectoris
+    - vectoriz
+    - optimisation level
+    - optimization level
+    - compiler
+    - bit-identical
+    - reproduc
+    - peer
+  unsafe_markers:
+    - "_mm_fmadd"
+    - "_mm256_fmadd"
+    - "vfmaq"
+    - "vmlaq"
+    - "std::fma("
+    - "fmaf("
+    - "__builtin_fma"
+    - "fp contract(fast)"
+    - "fp contract(on)"
+    - "ffp-contract=fast"
+    - "ffp-contract=on"
+    - "fp_contract on"
+    - "ffast-math"
+    - ".has_fma"
+    - ".has_avx2"
+    - "__fma__"
+    - "immintrin"

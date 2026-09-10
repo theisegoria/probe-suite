@@ -1,0 +1,17 @@
+id: wc-03
+tier: 1
+title: GGX alpha for an unoverridden material
+context:
+  - wc/render/material_bind.cpp
+  - wc/render/ggx_brdf.hlsl
+  - wc/render/probe_defaults.h
+missing:
+  - wc/render/material_defaults.h
+question: >
+  An untextured material is bound with no roughness override and no roughness
+  scale override, then shaded by EvaluateBrdf. What value of alpha does
+  DistributionGgx receive?
+ground_truth:
+  answerable: false
+  distractor_answer: "0.25"
+  correct_answer: "0.09"

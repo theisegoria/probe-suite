@@ -1,0 +1,46 @@
+id: lm-06
+title: Finish the ambient wildlife spawner
+context:
+  - lm/core/types.h
+  - lm/assets/spawn_registry.h
+  - lm/sim/ambient_spawner.cpp
+task: >
+  The wildlife pass was cut before the last milestone and only the validation
+  and despawn halves survived. AmbientSpawner::Tick now does everything except
+  actually spawn anything.
+
+  Finish it. On the ticks it already wakes up on, and while the live critter
+  count is under the cap, pick one registered spawn point that is neither
+  crowded nor too close to a player, preferring points with a higher
+  SpawnPointDesc::weight, and spawn one critter there with the species
+  PickSpecies chooses. Skip points whose max_occupants is already met. Return
+  the function or functions you changed.
+hazard:
+  id: unordered-iteration
+  name: Walking the registry hash table to choose a spawn point makes the choice depend on bucket order, which differs between machines and package load histories
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - unordered
+    - hash
+    - bucket
+    - iteration
+    - order
+    - ordering
+    - insertion
+    - manifest
+    - stdlib
+    - standard library
+    - implementation
+    - platform
+    - sort
+    - bit-identical
+    - reproduc
+    - peer
+  mitigating_markers: ["manifestids", "std::sort", "sorted", "ordered"]
+  unsafe_markers:
+    - ".entries()"

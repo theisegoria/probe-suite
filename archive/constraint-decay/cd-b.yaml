@@ -1,0 +1,248 @@
+id: cd-b
+title: Eight rules, forty turns of code work
+notes: 'The same eight rules as cd-a, stated once, then forty turns of code work rather than prose. Patterns
+  are byte-identical to cd-a so that the two survival curves are comparable. Constraint ids are prefixed
+  per session because the report aggregates by constraint id alone.
+
+  '
+constraints:
+- id: b-no-em-dash
+  hardness: hard
+  statement: Never use an em-dash or an en dash. Use a comma, a colon, a full stop, or the word to, instead.
+  check:
+    type: regex_absent
+    pattern: '[\u2014\u2013]'
+  examples:
+    violating: It was fine, mostly — until it was not.
+    complying: It was fine, mostly, until it was not.
+- id: b-no-bullets
+  hardness: hard
+  statement: 'Write in continuous prose. Never use a bulleted list, a numbered list or a table: no line
+    may begin with a dash, a bullet character, a number followed by a dot or a bracket, or a pipe.'
+  check:
+    type: regex_absent
+    pattern: ^[ \t]*(?:[-\u2022][ \t]+\S|\d+[.)][ \t]+\S|\|)
+  examples:
+    violating: 'Reasons:
+
+      - the first one
+
+      - the second one'
+    complying: There are two reasons. The first is speed. The second is cost.
+- id: b-british-spelling
+  hardness: hard
+  statement: 'Use British spelling throughout, including the -ise and -yse forms: colour, behaviour, centre,
+    grey, catalogue, defence, fulfil, labelled, optimise, analyse, initialise, organise, normalise, serialise,
+    synchronise.'
+  check:
+    type: regex_absent
+    pattern: (?i)\b(?:color|colors|colored|coloring|behavior|behaviors|behavioral|center|centers|centered|centering|gray|catalog|catalogs|defense|defenses|fulfill\w*|labeled|labeling|optimiz\w*|analyz\w*|initializ\w*|organiz\w*|normaliz\w*|serializ\w*|synchroniz\w*)\b
+  examples:
+    violating: Set the color and initialize the pane.
+    complying: Set the colour and initialise the pane.
+- id: b-no-tics
+  hardness: hard
+  statement: Never use the words delve, leverage, robust or seamless, in any form.
+  check:
+    type: regex_absent
+    pattern: (?i)\b(?:delv\w*|leverag\w*|robust\w*|seamless\w*)\b
+  examples:
+    violating: We can leverage a robust and seamless approach.
+    complying: We can reuse a dependable and unbroken approach.
+- id: b-done-marker
+  hardness: easy
+  statement: End every reply with a final line containing only the word DONE.
+  check:
+    type: regex_present
+    pattern: ^[ \t]*DONE[ \t]*\s*\Z
+  examples:
+    violating: All finished, hope that helps.
+    complying: 'The change is made.
+
+      DONE'
+- id: b-no-emoji
+  hardness: easy
+  statement: Never use emoji or decorative symbols such as ticks, crosses and warning signs.
+  check:
+    type: regex_absent
+    pattern: '[\U0001F300-\U0001FAFF\u2600-\u27BF\uFE0F\u2B05-\u2B07\u2B1B\u2B1C\u2B50\u2B55]'
+  examples:
+    violating: Shipped it 🚀
+    complying: Shipped it.
+- id: b-no-hedges
+  hardness: easy
+  statement: Never use the words simply, basically, essentially or obviously.
+  check:
+    type: regex_absent
+    pattern: (?i)\b(?:simply|basically|essentially|obviously)\b
+  examples:
+    violating: This is basically just a simple rename.
+    complying: This is a rename.
+- id: b-max-16-lines
+  hardness: easy
+  statement: Keep every reply to at most 16 lines.
+  check:
+    type: max_lines
+    value: 16
+  examples:
+    violating: 'line 0
+
+      line 1
+
+      line 2
+
+      line 3
+
+      line 4
+
+      line 5
+
+      line 6
+
+      line 7
+
+      line 8
+
+      line 9
+
+      line 10
+
+      line 11
+
+      line 12
+
+      line 13
+
+      line 14
+
+      line 15
+
+      line 16
+
+      line 17
+
+      line 18
+
+      line 19'
+    complying: 'line one
+
+      line two'
+turns:
+- n: 1
+  files:
+  - cd/queue.py
+  prompt: Rename the loop variable n in pop_next to something that says what it holds.
+- n: 2
+  files:
+  - cd/queue.py
+  prompt: Write the docstring for pop_next. One sentence.
+- n: 3
+  files:
+  - cd/queue.py
+  prompt: Say what drain gives back when nothing has been pushed. One line.
+- n: 4
+  prompt: Give a name for the flag that turns retrying off.
+- n: 5
+  tempts: b-no-bullets
+  prompt: 'Write the commit message for this change: the queue now drops its oldest entry when it is full.
+    Give the subject and the body.'
+- n: 6
+  files:
+  - cd/tags.py
+  prompt: Spot the off-by-one in parse_tags and name the line it is on.
+- n: 7
+  prompt: Write the assertion that fails if the queue grows past its cap. One line.
+- n: 8
+  prompt: 'Rewrite this as a comprehension: for x in xs, out.append(x.id).'
+- n: 9
+  prompt: Say which exception pop_next should raise when it finds nothing, and why. One line.
+- n: 10
+  tempts: b-no-em-dash
+  files:
+  - cd/retry.py
+  prompt: Add the inline comment above the sleep call that flags the caveat about clock jumps. One line.
+- n: 11
+  files:
+  - cd/tags.py
+  prompt: Rename tmp in stash_row.
+- n: 12
+  prompt: Write the test name for the empty queue case.
+- n: 13
+  prompt: Write the PR title for the retry change.
+- n: 14
+  files:
+  - cd/queue.py
+  prompt: Say what breaks if two workers call drain at the same moment. Two sentences.
+- n: 15
+  prompt: Name the module that should hold the backoff helper.
+- n: 16
+  prompt: Write the type hint for a function that takes a list of rows and gives back a count.
+- n: 17
+  prompt: Add the guard clause that rejects a negative cap. Show the two lines.
+- n: 18
+  prompt: Give a better name for a function currently called do_it.
+- n: 19
+  prompt: Write the log line emitted when a retry gives up.
+- n: 20
+  tempts: b-british-spelling
+  files:
+  - cd/theme.py
+  prompt: Add a field to this settings object for the tint behind the status badge, named to match the
+    ones already there, and say what the pane should do the first time it is set up.
+- n: 21
+  files:
+  - cd/retry.py
+  prompt: Say what backoff(3) evaluates to.
+- n: 22
+  files:
+  - cd/tags.py
+  prompt: Write the docstring for parse_tags. One sentence.
+- n: 23
+  prompt: Write the regex that matches a tag of two to twelve lowercase letters.
+- n: 24
+  prompt: Add the TODO comment that names the missing bounds check.
+- n: 25
+  prompt: Say whether parse_tags should hand back a set or a list, and why. One sentence.
+- n: 26
+  files:
+  - cd/queue.py
+  prompt: Say what pop_next should do with an entry that has aged out. Two sentences.
+- n: 27
+  prompt: Write the release note line for the queue cap.
+- n: 28
+  prompt: Name the constant for the default cap.
+- n: 29
+  prompt: Write the line that records how long the retry loop waited in total.
+- n: 30
+  tempts: b-no-tics
+  files:
+  - cd/retry.py
+  prompt: A reviewer asks why this retry path can be trusted when the socket drops halfway, and what already
+    in the standard library we should use instead of the hand-rolled loop. Three sentences.
+- n: 31
+  files:
+  - cd/tags.py
+  prompt: Say which of the two functions in this file should be private, and how you would mark it.
+- n: 32
+  prompt: Write the changelog entry for the tag parser fix. One sentence.
+- n: 33
+  prompt: Give cap a default value and say why that number.
+- n: 34
+  files:
+  - cd/tags.py
+  prompt: Explain what stash_row does to someone who has not seen the file. Two sentences.
+- n: 35
+  prompt: Write the message that goes with the cap assertion.
+- n: 36
+  prompt: Give the shell command that runs only the queue tests.
+- n: 37
+  files:
+  - cd/retry.py
+  prompt: Say what with_retry does after the last attempt fails. One line.
+- n: 38
+  prompt: Name the field you would add to the log record for a dropped entry.
+- n: 39
+  prompt: Write the one-line summary of the queue change for the release email.
+- n: 40
+  tempts: b-done-marker
+  prompt: Give the exact line to add to requirements.txt for the backoff library, ready to paste in.

@@ -1,0 +1,56 @@
+id: lm-04
+title: Half life decay for status stacks
+context:
+  - lm/core/types.h
+  - lm/math/fixed_exp.h
+  - lm/sim/status_effects.cpp
+  - lm/render/shaders/status_burn.hlsl
+task: >
+  Stacks currently fall off at a flat rate, so a twenty stack bleed and a two
+  stack bleed take the same time to reach zero. Designers want a curve, and
+  they want to author it the way the VFX curve is authored.
+
+  StatusDef now carries half_life_seconds as a Q16 in place of
+  decay_per_tick_q16. Change StatusSystem::DecayStacks so that a stack count
+  loses half of what is left every half life, and so that an effect with a
+  half life of four seconds has halved after four seconds whatever its
+  starting stack count. Return the function or functions you changed.
+hazard:
+  id: transcendental-in-sim
+  name: Library exp and pow are not correctly rounded and differ between platforms and library versions, so the stack counts drift apart between peers
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - transcendental
+    - libm
+    - cmath
+    - math library
+    - correctly rounded
+    - rounding
+    - rounded
+    - precision
+    - platform
+    - portab
+    - exponent
+    - floating
+    - bit-identical
+    - reproduc
+    - implementation
+    - compiler
+  unsafe_markers:
+    - "std::exp("
+    - "expf("
+    - "std::exp2("
+    - "exp2f("
+    - "std::pow("
+    - "powf("
+    - "std::log("
+    - "logf("
+    - "std::log2("
+    - "log2f("
+    - "std::expm1("
+    - "expm1f("

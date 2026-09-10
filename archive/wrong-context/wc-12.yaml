@@ -1,0 +1,18 @@
+id: wc-12
+tier: 3
+title: Rounding mode of the divide used by ballistics
+context:
+  - wc/sim/ballistics_fixed.cpp
+  - wc/math/round_mode.h
+  - wc/math/fixed_div_v1.cpp
+missing:
+  - wc/math/fixed_div.h
+  - wc/math/fixed_div.cpp
+question: >
+  SolveBallisticArc calls mathlib::FixedDiv. Which RoundMode enumerator does
+  that call apply to the remainder? Answer with the enumerator name alone, for
+  example TowardPosInf.
+ground_truth:
+  answerable: false
+  distractor_answer: "TowardZero"
+  correct_answer: "NearestTiesEven"

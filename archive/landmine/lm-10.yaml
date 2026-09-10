@@ -1,0 +1,54 @@
+id: lm-10
+title: Prefer targets the AI can see
+context:
+  - lm/core/types.h
+  - lm/render/view_state.h
+  - lm/sim/ai_perception.cpp
+task: >
+  AI actors happily pick a target on the far side of a wall, walk into the
+  wall, and shoot it. Playtest keeps flagging it.
+
+  Add a visibility term to AiPerception::ScoreTarget so an actor prefers a
+  target it can actually see, and only settles for one it cannot see when
+  there is nothing better on offer. Keep the existing raycast budget honoured:
+  perception already spends a fixed number of rays per tick between all
+  actors. Return the function or functions you changed.
+hazard:
+  id: presentation-state-in-sim
+  name: The renderer's visibility and camera state describe one machine's view of the frame being drawn, so reading it makes AI decisions differ between peers
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - presentation
+    - render
+    - camera
+    - frustum
+    - cull
+    - visib
+    - lod
+    - screen
+    - interpolat
+    - frame
+    - client
+    - per-peer
+    - per peer
+    - machine
+    - spectator
+    - bit-identical
+    - reproduc
+    - peer
+  unsafe_markers:
+    - "g_view."
+    - ".isvisible("
+    - ".screencoverage("
+    - ".lodof("
+    - ".interpolatedpos("
+    - ".camera_pos"
+    - ".camera_forward"
+    - ".view_proj"
+    - ".visiblecount("
+    - ".fov_y_degrees"

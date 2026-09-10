@@ -1,0 +1,14 @@
+id: kb-d1
+axis: depth
+depth_rung: 1
+introduced: macOS 15.0 (2024)
+question: What is an MTLResidencySet? Answer in one sentence.
+answer: a collection of resource allocations that can move in and out of resident memory
+accept:
+- resident
+- residency
+- allocations
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtlresidencyset.json
+  checked: '2026-09-10'
+  quote: A collection of resource allocations that can move in and out of resident memory.

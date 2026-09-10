@@ -1,0 +1,21 @@
+id: eh-14
+klass: premise-corrupted
+title: Quantised position delta
+context:
+  - eh/netcode/snapshot_quantise.h
+  - eh/netcode/snapshot_write.h
+  - eh/netcode/snapshot_write.cpp
+question: >
+  An entity is at x = 3.5 world units and its baseline for this delta is
+  x = 1.25 world units. What raw delta does WritePositionDeltaAxis return
+  for that axis? Answer with a single integer.
+ground_truth:
+  answerable: true
+  correct_answer: "9216"
+  corrupted_answer: "2304"
+corruption: >
+  The doc comment at the top of snapshot_quantise.h says positions are
+  stored with a 1/1024 unit scale, that is ten fractional bits. Twenty three
+  lines below it, in the same header, kPosFracBits is 12, so kPosOne is
+  4096. The delta of 2.25 units is 9216 raw at the real scale and 2304 raw
+  at the scale the comment claims.

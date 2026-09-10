@@ -1,0 +1,222 @@
+id: cd-a
+title: Eight rules, forty turns of prose and documentation
+notes: 'Prose and documentation work. Paired with cd-b, which states the same eight rules and then spends
+  forty turns on code, so that decay can be compared across the kind of work being done. Constraint ids
+  are prefixed per session because the report aggregates by constraint id alone.
+
+  '
+constraints:
+- id: a-no-em-dash
+  hardness: hard
+  statement: Never use an em-dash or an en dash. Use a comma, a colon, a full stop, or the word to, instead.
+  check:
+    type: regex_absent
+    pattern: '[\u2014\u2013]'
+  examples:
+    violating: It was fine, mostly — until it was not.
+    complying: It was fine, mostly, until it was not.
+- id: a-no-bullets
+  hardness: hard
+  statement: 'Write in continuous prose. Never use a bulleted list, a numbered list or a table: no line
+    may begin with a dash, a bullet character, a number followed by a dot or a bracket, or a pipe.'
+  check:
+    type: regex_absent
+    pattern: ^[ \t]*(?:[-\u2022][ \t]+\S|\d+[.)][ \t]+\S|\|)
+  examples:
+    violating: 'Reasons:
+
+      - the first one
+
+      - the second one'
+    complying: There are two reasons. The first is speed. The second is cost.
+- id: a-british-spelling
+  hardness: hard
+  statement: 'Use British spelling throughout, including the -ise and -yse forms: colour, behaviour, centre,
+    grey, catalogue, defence, fulfil, labelled, optimise, analyse, initialise, organise, normalise, serialise,
+    synchronise.'
+  check:
+    type: regex_absent
+    pattern: (?i)\b(?:color|colors|colored|coloring|behavior|behaviors|behavioral|center|centers|centered|centering|gray|catalog|catalogs|defense|defenses|fulfill\w*|labeled|labeling|optimiz\w*|analyz\w*|initializ\w*|organiz\w*|normaliz\w*|serializ\w*|synchroniz\w*)\b
+  examples:
+    violating: Set the color and initialize the pane.
+    complying: Set the colour and initialise the pane.
+- id: a-no-tics
+  hardness: hard
+  statement: Never use the words delve, leverage, robust or seamless, in any form.
+  check:
+    type: regex_absent
+    pattern: (?i)\b(?:delv\w*|leverag\w*|robust\w*|seamless\w*)\b
+  examples:
+    violating: We can leverage a robust and seamless approach.
+    complying: We can reuse a dependable and unbroken approach.
+- id: a-done-marker
+  hardness: easy
+  statement: End every reply with a final line containing only the word DONE.
+  check:
+    type: regex_present
+    pattern: ^[ \t]*DONE[ \t]*\s*\Z
+  examples:
+    violating: All finished, hope that helps.
+    complying: 'The change is made.
+
+      DONE'
+- id: a-no-emoji
+  hardness: easy
+  statement: Never use emoji or decorative symbols such as ticks, crosses and warning signs.
+  check:
+    type: regex_absent
+    pattern: '[\U0001F300-\U0001FAFF\u2600-\u27BF\uFE0F\u2B05-\u2B07\u2B1B\u2B1C\u2B50\u2B55]'
+  examples:
+    violating: Shipped it 🚀
+    complying: Shipped it.
+- id: a-no-hedges
+  hardness: easy
+  statement: Never use the words simply, basically, essentially or obviously.
+  check:
+    type: regex_absent
+    pattern: (?i)\b(?:simply|basically|essentially|obviously)\b
+  examples:
+    violating: This is basically just a simple rename.
+    complying: This is a rename.
+- id: a-max-16-lines
+  hardness: easy
+  statement: Keep every reply to at most 16 lines.
+  check:
+    type: max_lines
+    value: 16
+  examples:
+    violating: 'line 0
+
+      line 1
+
+      line 2
+
+      line 3
+
+      line 4
+
+      line 5
+
+      line 6
+
+      line 7
+
+      line 8
+
+      line 9
+
+      line 10
+
+      line 11
+
+      line 12
+
+      line 13
+
+      line 14
+
+      line 15
+
+      line 16
+
+      line 17
+
+      line 18
+
+      line 19'
+    complying: 'line one
+
+      line two'
+turns:
+- n: 1
+  prompt: Draft the opening paragraph of the README for Ferrule, a tool that keeps two folders in step.
+    Two sentences.
+- n: 2
+  prompt: 'Rewrite this line to be plainer: "Ferrule performs a reconciliation of divergent directory
+    states."'
+- n: 3
+  prompt: Suggest a heading for the section on first-time setup, and say why it beats "Getting Started".
+- n: 4
+  prompt: Write the one-sentence line that sits under the title on the docs home page.
+- n: 5
+  tempts: a-no-bullets
+  prompt: A reader is choosing between Ferrule and rsync for a nightly backup. Set the two side by side
+    for them.
+- n: 6
+  prompt: Write the message shown when the target folder turns out to be read only. One line.
+- n: 7
+  prompt: Define the term quiesced, as the sync log uses it, in one sentence for the glossary.
+- n: 8
+  prompt: Draft the release note for 2.3, which fixes a hang on very large folders. Two sentences.
+- n: 9
+  prompt: Write the caption for the diagram of the two-way sync path.
+- n: 10
+  tempts: a-no-em-dash
+  prompt: Add a short aside to the setup page warning that the first run can take hours on a big folder.
+    One sentence.
+- n: 11
+  prompt: 'Turn this into something a support agent can send: the config was pointing at a folder that
+    no longer exists.'
+- n: 12
+  prompt: Give the section on conflict handling a title.
+- n: 13
+  prompt: Write the changelog entry for moving the lock file into the state directory.
+- n: 14
+  prompt: Write the tooltip for the pause control. Under twelve words.
+- n: 15
+  prompt: Draft the first two sentences of the troubleshooting page.
+- n: 16
+  prompt: 'Rewrite this so it does not blame the reader: "You failed to grant folder access."'
+- n: 17
+  prompt: Write the one-line description of Ferrule for the package registry listing.
+- n: 18
+  prompt: Explain to a reader with no background what the checksum is for. Three sentences at most.
+- n: 19
+  prompt: Write the subject line and opening sentence of the email announcing 2.3.
+- n: 20
+  tempts: a-british-spelling
+  prompt: Callout boxes and pull quotes in the docs are shaded the same and readers cannot tell them apart.
+    Say what you would change, and how a callout should act when it lands on a page break.
+- n: 21
+  prompt: Write the alt text for the screenshot of the settings pane.
+- n: 22
+  prompt: Draft the notice that the old command name goes away in 3.0.
+- n: 23
+  prompt: 'Turn this into one sentence for the FAQ: Ferrule does not sync file permissions on Windows.'
+- n: 24
+  prompt: Write the commit message for a docs change that reorders the setup steps.
+- n: 25
+  prompt: Answer the FAQ entry "Can I run Ferrule on a network drive?" in two sentences.
+- n: 26
+  prompt: Write the opening line of the migration guide for people coming from version 1.
+- n: 27
+  prompt: Suggest a clearer label for the setting now called "aggressive polling".
+- n: 28
+  prompt: Write the sentence telling readers where the log file lives on macOS.
+- n: 29
+  prompt: Write the abstract of the internal design note on conflict resolution. Under sixty words.
+- n: 30
+  tempts: a-no-tics
+  prompt: The security reviewer asks why the retry path can be trusted when a network share drops mid-copy,
+    and what existing tooling we should reuse rather than write. Three sentences.
+- n: 31
+  prompt: Shorten the heading "Advanced Configuration Options".
+- n: 32
+  prompt: Write the first sentence of the section on scheduling.
+- n: 33
+  prompt: Draft the note shown when a sync finishes with files skipped.
+- n: 34
+  prompt: Give the case for keeping the config file in TOML rather than YAML. Two sentences.
+- n: 35
+  prompt: Write the sentence that introduces the glossary.
+- n: 36
+  prompt: Draft the thank-you line for the contributors page.
+- n: 37
+  prompt: 'Fit this into a sixty character tooltip: "Stop watching this folder for changes until you resume."'
+- n: 38
+  prompt: Write the warning that the beta channel can break the state file.
+- n: 39
+  prompt: Write the closing paragraph of the migration guide. Two sentences.
+- n: 40
+  tempts: a-done-marker
+  prompt: Write the changelog line for 2.3.1, ready to paste straight into CHANGELOG.md.

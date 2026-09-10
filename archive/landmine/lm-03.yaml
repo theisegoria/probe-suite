@@ -1,0 +1,63 @@
+id: lm-03
+title: Smooth turret slew and aim cone
+context:
+  - lm/core/types.h
+  - lm/math/fixed_trig.h
+  - lm/math/sim_math.h
+  - lm/sim/turret_tracking.cpp
+task: >
+  Turrets ratchet round in eleven degree steps because the tracking code still
+  snaps to the thirty two legacy sectors, and they fire the moment the sector
+  matches, which is why a turret can put a whole burst several degrees wide of
+  a moving target.
+
+  TurretDef now carries two new fields: slew_degrees_per_second (Q16 degrees)
+  and aim_cone_degrees (Q16 degrees). Make TrackTarget turn the barrel towards
+  the target at that slew rate rather than jumping between sector centres, and
+  make CanFire true only when the barrel is within aim_cone_degrees of the
+  direction to the target. Return the functions you changed.
+hazard:
+  id: transcendental-in-sim
+  name: Library sin, cos and atan2 are not required to be correctly rounded, so the facing and the aim test differ across platforms and library versions
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - transcendental
+    - libm
+    - cmath
+    - math library
+    - correctly rounded
+    - rounding
+    - rounded
+    - precision
+    - platform
+    - portab
+    - trig
+    - sine
+    - cosine
+    - atan
+    - radian
+    - floating
+    - bit-identical
+    - reproduc
+    - implementation
+    - compiler
+  unsafe_markers:
+    - "std::sin("
+    - "std::cos("
+    - "std::tan("
+    - "std::atan("
+    - "std::atan2("
+    - "std::acos("
+    - "std::asin("
+    - "sinf("
+    - "cosf("
+    - "tanf("
+    - "atanf("
+    - "atan2f("
+    - "acosf("
+    - "asinf("

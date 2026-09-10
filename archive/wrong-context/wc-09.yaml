@@ -1,0 +1,17 @@
+id: wc-09
+tier: 3
+title: Restitution slop in the shipping rows
+context:
+  - wc/physics/island_solver.cpp
+  - wc/physics/contact_rows_v1.cpp
+missing:
+  - wc/physics/contact_rows.h
+  - wc/physics/contact_rows.cpp
+question: >
+  A live match is being simulated, not a legacy replay. At or below what
+  closing speed, in metres per second, does the contact row preparation give a
+  contact no restitution at all?
+ground_truth:
+  answerable: false
+  distractor_answer: "0.5"
+  correct_answer: "1.5"

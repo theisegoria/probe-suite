@@ -1,0 +1,14 @@
+id: kb-v3
+axis: version-delta
+introduced: macOS 26.0 (2025)
+question: In Metal 4, which protocol creates render and compute pipeline states? Give the type name.
+answer: MTL4Compiler
+accept:
+- mtl4compiler
+must_not_say:
+- mtldevice
+- makerenderpipelinestate on mtldevice
+source:
+  url: https://developer.apple.com/tutorials/data/documentation/metal/mtl4compiler.json
+  checked: '2026-09-10'
+  quote: A abstraction for a pipeline state and shader function compiler.

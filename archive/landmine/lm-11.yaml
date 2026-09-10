@@ -1,0 +1,63 @@
+id: lm-11
+title: Chance based loot drops
+context:
+  - lm/core/types.h
+  - lm/sim/rng.h
+  - lm/sim/loot.cpp
+task: >
+  Every boss currently drops the same three things every single time, because
+  LootSystem::RollDrops only emits the entries marked always_drops and skips
+  everything else. Nobody has ever seen a tier four item outside the test map.
+
+  Make drops chance based. An always_drops entry still always drops. Every
+  other entry should drop with probability entry.weight in a thousand, with
+  the player's luck from LuckFor added to that probability, and a count picked
+  somewhere between min_count and max_count. An entry that drops should have a
+  one in twenty chance of coming out one quality tier higher than it was
+  authored at. Return the function or functions you changed.
+hazard:
+  id: unseeded-randomness
+  name: A generator seeded from the clock or from the platform default gives every peer a different draw, and a replay a third one
+  flag_keywords:
+    - determinis
+    - deterministic
+    - nondeterminis
+    - lockstep
+    - desync
+    - divergen
+    - random
+    - rng
+    - seed
+    - clock
+    - time source
+    - wall clock
+    - stream
+    - distribution
+    - implementation
+    - stdlib
+    - standard library
+    - replay
+    - rollback
+    - snapshot
+    - per-peer
+    - per peer
+    - machine
+    - bit-identical
+    - reproduc
+    - peer
+  unsafe_markers:
+    - "rand()"
+    - "srand("
+    - "random_device"
+    - "chrono::"
+    - "std::time("
+    - "time(nullptr)"
+    - "steady_clock"
+    - "system_clock"
+    - "high_resolution_clock"
+    - "getticks("
+    - "uniform_int_distribution"
+    - "uniform_real_distribution"
+    - "bernoulli_distribution"
+    - "std::shuffle("
+    - "random_shuffle"
