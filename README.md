@@ -119,14 +119,36 @@ shipped half-working.
 **A rendering and behaviour loop.** The model writes a shader or a vehicle
 setup, a harness compiles and runs it, and the model iterates against
 structured failures and the rendered frame until it converges, with
-iterations-to-convergence as the metric. The graphics half is achievable: a
-Mac has a real Metal compiler, and headless Chromium gives a portable WebGL
-arm. The vehicle half is not, on the substrate it would need: PhysX 5
-upstream ships build presets for Linux and Windows only, with no macOS
-platform in the CMake tree at all, so running the same API the recall items
-grade would mean porting the SDK rather than using it. PyBullet or MuJoCo
-would give real vehicle dynamics for one pip install, at the cost of no
-longer testing PhysX.
+iterations-to-convergence as the metric. The graphics half is
+straightforward: a Mac has a real Metal compiler, and headless Chromium
+gives a portable WebGL arm.
+
+The vehicle half needs PhysX built for Apple Silicon, which upstream does
+not ship. It is a bounded adaptor rather than a port, and the source is
+closer to it than the preset list suggests:
+
+- Platform detection is intact. `PxPreprocessor.h` sets `PX_OSX` from
+  `__APPLE__`, and defines `PX_APPLE_FAMILY` and `PX_UNIX_FAMILY` so Apple
+  is already inside the Unix family.
+- The Unix paths already branch on it. `PxUnixFPU.h` guards on
+  `PX_LINUX || PX_OSX`, not on Linux alone.
+- NEON selection is architectural, not per-platform. `PX_NEON` comes from
+  `__ARM_NEON`, which Apple clang defines on Apple Silicon, and the NEON
+  headers sit under the Unix family.
+- The build system still accepts a mac target.
+  `GetCompilerAndPlatform.cmake` has a `TARGET_BUILD_PLATFORM STREQUAL
+  "mac"` branch and `cmake_generate_projects.py` maps `mac64` onto it.
+  22 files across the SDK still reference `PX_APPLE`, `PX_OSX` or
+  `__APPLE__`.
+
+What is missing is the build wiring: a `mac-aarch64-clang` preset, a
+`source/compiler/cmake/mac/` directory mirroring the Linux one (15 files,
+about 1100 lines, most of it near-identical under clang), and an arm64
+branch where `GetCompilerAndPlatform.cmake` currently hardcodes
+`mac.x86_${LIBPATH_SUFFIX}`. Plus whatever the first build turns up.
+
+PyBullet or MuJoCo would give real vehicle dynamics for one pip install, at
+the cost of no longer testing PhysX.
 
 **Automated source refresh.** See the caveat above.
 
