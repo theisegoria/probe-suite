@@ -73,6 +73,25 @@ ok    renders a flat unlit silhouette    rung 6 (expected 6)
 A ladder that reported 7 for everything would look identical to a working
 one in a summary table. This is what separates them.
 
+Mutants only test rejection. A ladder tuned so tightly around one solution
+that it fails every model would pass the table above and still be useless,
+so the self-test also runs a second reference written to share as little as
+possible with the first:
+
+```
+ok    second reference, swept and painted   rung 7 (expected 7)
+```
+
+`mr-01b.cpp` builds the torus by sweeping a circle on an explicit frame
+rather than from the closed form, at 40 by 29 instead of 48 by 24, stores
+it v major instead of u major, splits each quad on the other diagonal, and
+renders with a painter's algorithm and no depth buffer, from a different
+camera under a different light. It reached rung 7 on its first run.
+
+It is also an independent witness for the predicate that was fixed: it
+scores 0.77 on the old luminance mirror, which would have failed the old
+check, and 0.999 on the silhouette mirror that replaced it.
+
 The reference also earned its keep before any model saw the task. Its first
 run reached rung 6, failing a left to right symmetry check, and the renderer
 was right: the predicate measured luminance symmetry, which an off-axis
@@ -83,7 +102,7 @@ to catch unsatisfiable tasks, and it caught one.
 ## Running it
 
 ```
-python3 harness/selftest_mesh.py                      # prove the ladder discriminates
+./probe mesh selftest                                 # prove the ladder discriminates
 python3 suite/mesh_loop.py --model paste --task mr-01 # administer
 ```
 

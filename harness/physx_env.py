@@ -32,17 +32,30 @@ class PhysXMissing(Exception):
     pass
 
 
-def _candidate_roots():
-    env = os.environ.get("PROBE_PHYSX_ROOT")
-    if env:
-        yield env
-    yield os.path.join(ROOT, "engines", "PhysX", "physx")
+def _looks_like_physx(path):
+    return os.path.isdir(os.path.join(path, "include", "vehicle"))
 
 
 def find_root():
-    for c in _candidate_roots():
-        if os.path.isdir(os.path.join(c, "include", "vehicle")):
-            return c
+    """PROBE_PHYSX_ROOT wins if it is set, and is an error if it is wrong.
+
+    Falling back to the bundled checkout when someone has pointed the
+    variable somewhere else would build against a different SDK than they
+    asked for and say nothing about it, which is the worst way to be
+    helpful."""
+    env = os.environ.get("PROBE_PHYSX_ROOT")
+    if env:
+        if _looks_like_physx(env):
+            return env
+        raise PhysXMissing(
+            "PROBE_PHYSX_ROOT is set to %s, which has no include/vehicle, so it "
+            "is not the physx directory of a PhysX 5 checkout. Point it at the "
+            "'physx' directory inside the checkout, or unset it to use "
+            "engines/PhysX." % env)
+
+    bundled = os.path.join(ROOT, "engines", "PhysX", "physx")
+    if _looks_like_physx(bundled):
+        return bundled
     raise PhysXMissing(
         "no PhysX 5 checkout found. Clone NVIDIA-Omniverse/PhysX into "
         "engines/PhysX, or set PROBE_PHYSX_ROOT to the physx directory of "

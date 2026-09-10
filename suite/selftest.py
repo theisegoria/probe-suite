@@ -13,7 +13,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suite import schema, score  # noqa: E402
+from suite import schema, score, sources  # noqa: E402
 
 
 def know(verdict, answer="-", conf="HIGH"):
@@ -94,6 +94,12 @@ def main():
         for p in problems:
             print("  " + p)
         sys.exit("case files do not validate")
+
+    # A stale snapshot does not make the knowledge benchmark noisier, it
+    # makes it wrong in one direction: API the vendor shipped after the
+    # snapshot is scored as fabrication, and a model is marked down for
+    # knowing more than the harness does.
+    stale = sources.report_freshness()
 
     results = []
     for case in schema.load_all():
@@ -213,7 +219,11 @@ def main():
     print("%d assertion(s), %d failure(s)" % (len(results), len(failed)))
     for ok, label, got, want in failed:
         print("  FAIL %-34s got %r want %r" % (label, got, want))
-    sys.exit(1 if failed else 0)
+    if stale:
+        print("%d source snapshot(s) too old to trust. Refresh them, or set %s "
+              "if you have checked by hand that the vendor has not moved."
+              % (stale, sources.OVERRIDE))
+    sys.exit(1 if (failed or stale) else 0)
 
 
 if __name__ == "__main__":

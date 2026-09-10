@@ -1,5 +1,7 @@
 # probe suite
 
+[![self test](https://github.com/theisegoria/probe-suite/actions/workflows/selftest.yml/badge.svg)](https://github.com/theisegoria/probe-suite/actions/workflows/selftest.yml)
+
 Three benchmarks you can download and run against your own models. They test
 things the public leaderboards do not report: what a model actually knows
 about a versioned API and where that knowledge gives out, whether it can
@@ -13,7 +15,8 @@ cd probe-suite
 ```
 
 `doctor` tells you what is installed, what each benchmark needs, and which
-of the three you can run right now.
+of the three you can run right now. `./probe selftest` then proves the
+scoring works before you spend anything on a run.
 
 ## The three
 
@@ -76,6 +79,26 @@ one in a summary table, so each benchmark ships a self-test that breaks a
 known-good solution in one specific way per rung and asserts each mutant
 stops exactly where it should.
 
+Mutants alone are only half of it, because a ladder can fail in two
+opposite directions. One is answering 7 to everything. The other is being
+tuned so tightly around one solution that it fails every model for reasons
+that are the benchmark's fault, and no amount of breaking that solution
+will ever reveal it. So each ladder also has a second reference, written to
+share as little as possible with the first, that has to reach the top:
+
+```
+mr-01b   a swept circle on an explicit frame instead of the closed form,
+         40 by 29 instead of 48 by 24, v major instead of u major, the
+         other quad diagonal, and a painter's algorithm renderer with no
+         depth buffer
+jd-01b   the wheels numbered the other way round, front is 2 and 3, with
+         pure pursuit against a lookahead point instead of heading error,
+         and a PI speed controller instead of a proportional one
+```
+
+Both reached rung 7 on their first run, which is the result worth having:
+the ladders were not measuring the references.
+
 ```
 ./probe jeep selftest
   ok    unmodified reference               rung 7 (expected 7)
@@ -100,6 +123,17 @@ stops exactly where it should.
   ok    renders a flat unlit silhouette    rung 6 (expected 6)
 ```
 
+One command runs all of it:
+
+```
+./probe selftest
+```
+
+It picks its steps from what the machine can do and says what it skipped,
+because a suite that quietly ran three of five checks and reported success
+would be worse than one that failed. `--require` turns a skip into a
+failure, which is what the CI workflow uses.
+
 It earns its keep. The mesh reference solution first stopped at rung 6 on a
 symmetry check, and the renderer was right: the predicate measured luminance
 symmetry, which an off-axis light legitimately breaks. The check now
@@ -107,8 +141,23 @@ measures the silhouette against its own mirror. The jeep reference then
 found two more: a terrain whose triangles were wound so their normals
 pointed downwards, invisible to the raycast the suspension uses, and a
 finish that was never written to the trace because the program stopped one
-tick too early. A reference solution is there to catch unsatisfiable tasks,
-and between them they caught three.
+tick too early. Writing the tests for the harness itself then found a
+fourth, where an explicit `PROBE_PHYSX_ROOT` pointing somewhere wrong fell
+back to the bundled checkout and built against a different SDK than the
+operator asked for, silently. A reference solution is there to catch
+unsatisfiable tasks, and between them they caught four.
+
+## Ground truth has a shelf life
+
+The knowledge benchmark reads its answers out of dated snapshots of vendor
+documentation. A stale snapshot does not make it noisier, it makes it wrong
+in one direction: API the vendor shipped after the snapshot is scored as
+fabrication, and a model is marked down for knowing more than the harness.
+
+So the snapshots have a clock on them. Past 90 days the self-test says so,
+past 180 it fails, and `PROBE_ALLOW_STALE_SOURCES=1` downgrades that to a
+warning for anyone who has checked by hand that the vendor has not moved.
+`python3 suite/sources.py` prints what to re-read.
 
 ## Running against a model
 
@@ -126,11 +175,13 @@ probe                     one entry point for everything
 suite/                    knowledge benchmark, and the shared runner
 harness/                  geometry and jeep benchmarks: predicates, ladders, references
 assets/                   the terrain, the jeep, and where each came from
+fixtures/                 recorded trajectories, so the jeep ladder is testable without PhysX
 sources/                  dated snapshots of vendor documentation
 cases/                    task and item definitions
 adaptors/                 PhysX 5 for Apple Silicon
 archive/                  four instruments about reasoning rather than knowledge
 docs/                     the long form for each benchmark
+.github/                  the self test, on every push
 ```
 
 ## Requirements

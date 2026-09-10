@@ -1,0 +1,53 @@
+name: self test
+
+# The suite's whole claim is that its scoring discriminates. That claim is
+# worth exactly as much as the last time anyone checked it, so check it on
+# every push.
+#
+# PhysX is far too heavy to build here, so the jeep ladder runs against
+# recorded trajectories instead. Those cover rungs 3 to 7, which is where
+# all the judgement lives, and fabricated build results cover 0 to 2. The
+# live jeep test runs on a machine with the SDK, and refreshes the
+# recordings when the reference changes:
+#
+#   python3 harness/selftest_jeep.py --record fixtures/jeep
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly, so a source snapshot going stale is noticed by the clock
+    # rather than by whoever next runs a benchmark against it.
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install what the harness reads and draws with
+        run: python3 -m pip install --upgrade pyyaml pillow
+
+      # The mesh benchmark asks the model for C++23, so the harness has to
+      # be able to compile C++23 itself. GCC 14 is the first with <print>.
+      - name: Install GCC 14
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-14
+          echo "PROBE_CXX=g++-14" >> "$GITHUB_ENV"
+
+      - name: What this machine can run
+        run: ./probe doctor
+
+      # --require turns a skip into a failure. Without it, a runner that
+      # quietly lost its compiler would report a green build having checked
+      # three of the four things it can check here, which is worse than red.
+      - name: Self test
+        run: ./probe selftest --require knowledge,tools,jeep-offline,mesh

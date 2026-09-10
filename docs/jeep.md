@@ -97,6 +97,36 @@ so explicitly, and the reference writes the row before it stops.
 Both of those are bugs a benchmark would otherwise have blamed on every
 model that ran it.
 
+Mutants only test rejection, so the self-test also runs a second reference
+that has to reach the top:
+
+```
+ok    second reference, pure pursuit     rung 7 (expected 7)
+```
+
+`jd-01b.cpp` numbers the wheels the other way round, front is 2 and 3, so
+anything that quietly assumed wheel 0 was front left shows up. It steers by
+pure pursuit against a lookahead point on the waypoint polyline rather than
+heading error to the next waypoint, holds speed with a PI controller rather
+than a proportional one, and runs stiffer suspension and different gearing
+inside the same spec. It reached rung 7 on its first run, at 15.6 seconds
+against the first reference's 14.0.
+
+## Testing the ladder without PhysX
+
+Building the SDK is far too heavy for continuous integration, so every
+mutant and reference trajectory is recorded once on a machine that has it:
+
+```
+python3 harness/selftest_jeep.py --record fixtures/jeep
+./probe jeep selftest --offline
+```
+
+The offline run scores those recordings, which covers rungs 3 to 7 where
+all the judgement lives, and uses fabricated compile and run results for
+rungs 0 to 2. A ladder that mishandles a failed build does not need a
+physics engine to prove it. Re-record whenever a reference changes.
+
 ## What the feedback carries
 
 The trajectory, not a picture. How many ticks, how far, top speed, start and
@@ -108,7 +138,9 @@ much, and never how to fix it.
 
 ```
 ./probe jeep selftest                       # prove the ladder discriminates
+./probe jeep selftest --offline             # same, against recorded runs, no PhysX
 ./probe jeep run --model paste --task jd-01 # administer
+./probe selftest                            # every benchmark's scoring at once
 ```
 
 ## Requirements

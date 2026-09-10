@@ -11,6 +11,7 @@ running, so a run never silently changes its own ground truth halfway
 through a comparison.
 """
 
+import datetime as dt
 import io
 import json
 import os
@@ -51,6 +52,74 @@ def available():
     if not os.path.isdir(DIR):
         return []
     return sorted(f[:-5] for f in os.listdir(DIR) if f.endswith(".json"))
+
+
+# A snapshot is a dated copy of vendor documentation, so it rots. Past the
+# warning age the suite says so; past the failing age the self test refuses
+# to pass, because a stale snapshot does not make the benchmark noisier, it
+# makes it wrong in a specific direction: current API that the vendor added
+# after the snapshot gets scored as fabrication, and the model is marked
+# down for being more right than the harness.
+WARN_DAYS = 90
+FAIL_DAYS = 180
+OVERRIDE = "PROBE_ALLOW_STALE_SOURCES"
+
+
+def age_days(domain, today=None):
+    """Days since this snapshot was checked, or None if it does not say."""
+    checked = load(domain).get("checked")
+    if not checked:
+        return None
+    try:
+        when = dt.date.fromisoformat(str(checked))
+    except ValueError:
+        return None
+    return ((today or dt.date.today()) - when).days
+
+
+def freshness(today=None):
+    """(domain, age, state) per snapshot. state is ok, warn, stale or unknown."""
+    out = []
+    for d in available():
+        age = age_days(d, today)
+        if age is None:
+            state = "unknown"
+        elif age >= FAIL_DAYS:
+            state = "stale"
+        elif age >= WARN_DAYS:
+            state = "warn"
+        else:
+            state = "ok"
+        out.append((d, age, state))
+    return out
+
+
+def report_freshness(today=None):
+    """Print the state of every snapshot. Returns the number that are stale.
+
+    Set PROBE_ALLOW_STALE_SOURCES=1 to be told and not stopped, which is the
+    right setting when you have checked by hand that the vendor has not moved.
+    """
+    rows = freshness(today)
+    bad = 0
+    for domain, age, state in rows:
+        if state == "ok":
+            continue
+        if state == "unknown":
+            print("  sources/%s.json has no `checked` date, so its age is unknown" % domain)
+            bad += 1
+        elif state == "warn":
+            print("  sources/%s.json was checked %d days ago. Past %d it will fail: "
+                  "python3 suite/sources.py" % (domain, age, FAIL_DAYS))
+        else:
+            print("  sources/%s.json was checked %d days ago, over the %d day limit. "
+                  "Refresh it: python3 suite/sources.py" % (domain, age, FAIL_DAYS))
+            bad += 1
+    if bad and os.environ.get(OVERRIDE):
+        print("  %s is set, so a stale snapshot is a warning here rather than a failure."
+              % OVERRIDE)
+        return 0
+    return bad
 
 
 def physx_index(src):

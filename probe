@@ -2,6 +2,7 @@
 """probe: three benchmarks you can run against your own models.
 
   ./probe doctor              what is installed, and what each benchmark needs
+  ./probe selftest            prove every scorer discriminates, in one go
   ./probe knowledge --help    what a model knows about an API, and where it breaks
   ./probe mesh --help         procedural geometry it writes and renders itself
   ./probe jeep --help         drive a vehicle round a course under real physics
@@ -102,9 +103,7 @@ def doctor(argv):
 
     print("""
   next
-    ./probe knowledge selftest     prove the knowledge scoring discriminates
-    ./probe mesh selftest          prove the mesh ladder discriminates
-    ./probe jeep selftest          prove the jeep ladder discriminates
+    ./probe selftest               prove all of the scoring, in one go
     ./probe knowledge generate     draw a fresh item set
 """)
     return 0
@@ -131,6 +130,86 @@ def knowledge(argv):
     return 2
 
 
+def _run(module, args):
+    """Delegate, but survive a module that reports by calling sys.exit."""
+    try:
+        return _delegate(module, args) or 0
+    except SystemExit as e:
+        code = e.code
+        if code is None:
+            return 0
+        if isinstance(code, int):
+            return code
+        print(code)
+        return 1
+
+
+def selftest(argv):
+    """Everything that can be proved without an API key or a model.
+
+    Steps are chosen by what this machine can actually do. Skipping is
+    reported, not silent: a suite that quietly ran three of five checks and
+    said "passed" would be worse than one that failed. Pass
+    --require key[,key] to turn a skip into a failure, which is what
+    continuous integration wants: knowledge, tools, jeep-offline, mesh,
+    jeep-live.
+    """
+    required = set()
+    for i, a in enumerate(argv):
+        if a == "--require" and i + 1 < len(argv):
+            required |= {k.strip() for k in argv[i + 1].split(",") if k.strip()}
+        elif a.startswith("--require="):
+            required |= {k.strip() for k in a.split("=", 1)[1].split(",") if k.strip()}
+
+    cxx_ok, cxx_detail = _cxx_ok()
+    px_ok, _px_detail = _physx_libs()
+
+    steps = [
+        ("knowledge", "knowledge scoring", "suite.selftest"),
+        ("tools", "harness tools", "harness.selftest_tools"),
+        ("jeep-offline", "jeep ladder, offline", "harness.selftest_jeep_offline"),
+    ]
+    skipped = []
+    if cxx_ok:
+        steps.append(("mesh", "mesh ladder", "harness.selftest_mesh"))
+    else:
+        skipped.append(("mesh", "no working C++23 compiler (%s)" % cxx_detail))
+
+    if cxx_ok and px_ok:
+        steps.append(("jeep-live", "jeep ladder, live against PhysX", "harness.selftest_jeep"))
+    elif not px_ok:
+        skipped.append(("jeep-live", "PhysX 5 is not built here. The offline step "
+                                     "scores recorded runs and covers every rung"))
+    else:
+        skipped.append(("jeep-live", "no compiler to build against PhysX"))
+
+    unknown = required - {k for k, _, _ in steps} - {k for k, _ in skipped}
+    if unknown:
+        print("  no such self test: %s" % ", ".join(sorted(unknown)))
+        return 2
+
+    failed = []
+    for key, label, module in steps:
+        print("\n%s== %s%s" % (DIM, label, OFF))
+        if _run(module, []):
+            failed.append(label)
+
+    print("\n%s" % ("-" * 58))
+    missing = []
+    for key, why in skipped:
+        print("  %sskipped  %-13s %s%s" % (DIM, key, why, OFF))
+        if key in required:
+            missing.append(key)
+    if missing:
+        print("  REQUIRED but skipped: %s" % ", ".join(missing))
+    if failed:
+        print("  FAILED: %s" % ", ".join(failed))
+    if failed or missing:
+        return 1
+    print("  %d self test(s) passed, %d skipped" % (len(steps), len(skipped)))
+    return 0
+
+
 def mesh(argv):
     if argv and argv[0] == "selftest":
         return _delegate("harness.selftest_mesh", argv[1:])
@@ -142,14 +221,18 @@ def mesh(argv):
 
 def jeep(argv):
     if argv and argv[0] == "selftest":
+        if "--offline" in argv:
+            return _delegate("harness.selftest_jeep_offline",
+                             [a for a in argv[1:] if a != "--offline"])
         return _delegate("harness.selftest_jeep", argv[1:])
     if argv and argv[0] == "run":
         return _delegate("suite.jeep_loop", argv[1:])
-    print("usage: ./probe jeep {selftest|run} [options]")
+    print("usage: ./probe jeep {selftest [--offline]|run} [options]")
     return 2
 
 
-COMMANDS = {"doctor": doctor, "knowledge": knowledge, "mesh": mesh, "jeep": jeep}
+COMMANDS = {"doctor": doctor, "selftest": selftest, "knowledge": knowledge,
+            "mesh": mesh, "jeep": jeep}
 
 
 def main():

@@ -1,9 +1,16 @@
 """Prove the ladder discriminates before trusting a rung it reports.
 
-Takes the reference solution, breaks it in one specific way per rung, and
-asserts each mutant stops exactly where it should. A ladder that reports
-rung 7 for everything, or rung 0 for everything, would look identical to a
-working one in a summary table. This is the only thing that separates them.
+Two halves, because a ladder can fail in two opposite directions.
+
+Rejection: take the reference solution, break it in one specific way per
+rung, and assert each mutant stops exactly where it should. A ladder that
+reported rung 7 for everything, or rung 0 for everything, would look
+identical to a working one in a summary table.
+
+Acceptance: run a second reference written to share as little as possible
+with the first, and assert it also reaches the top. Mutants alone cannot
+catch a ladder tuned so tightly around one solution that it fails every
+model for reasons that are the benchmark's fault.
 """
 
 import os
@@ -38,6 +45,14 @@ MUTANTS = [
 ]
 
 
+# Independent solutions that must also reach the top. Not variations of the
+# reference: different construction, different topology order, different
+# renderer.
+ALTERNATES = [
+    ("second reference, swept and painted", "harness/reference/mr-01b.cpp"),
+]
+
+
 def main():
     task = yaml.safe_load(open(os.path.join(ROOT, "cases/mesh-render/mr-01.yaml"), encoding="utf-8"))
     base = open(os.path.join(ROOT, "harness/reference/mr-01.cpp"), encoding="utf-8").read()
@@ -64,7 +79,21 @@ def main():
         finally:
             build.cleanup(wd)
 
-    print("\n%d mutant(s), %d failure(s)" % (len(MUTANTS), failures))
+    for label, path in ALTERNATES:
+        src = open(os.path.join(ROOT, path), encoding="utf-8").read()
+        wd, c, r = build.build_and_run(src)
+        try:
+            res = ladder.evaluate(task, wd, c, r)
+            ok = res["rung"] == 7
+            failures += 0 if ok else 1
+            print("  %s  %-34s rung %d (expected 7)%s"
+                  % ("ok  " if ok else "FAIL", label, res["rung"],
+                     "" if ok else "   <- %s" % (res["why"] or "")))
+        finally:
+            build.cleanup(wd)
+
+    print("\n%d mutant(s), %d alternate(s), %d failure(s)"
+          % (len(MUTANTS), len(ALTERNATES), failures))
     sys.exit(1 if failures else 0)
 
 
