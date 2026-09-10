@@ -1,163 +1,117 @@
-# Knowledge-break probe
+# probe suite
 
-What does a model actually know about a specific technical world, where does
-that knowledge give out, and what does the shape of the failure say about why.
-
-Three domains, each chosen because the vendor publishes machine-readable,
-versioned ground truth, and because the training text is lopsided in a way
-that makes a wrong-era answer likely:
-
-| domain | ground truth | the lopsidedness |
-|---|---|---|
-| Metal, MetalFX | Apple's documentation data feed | nine years of Metal 3, about one of Metal 4 |
-| Vulkan 1.3 and 1.4 | the spec's versions appendix and `vk.xml` | extensions promoted to core still documented as extensions everywhere |
-| PhysX vehicles 4.1 and 5.3 | per-release vehicle documentation | the 4.x vehicle API is in every tutorial; 5.1 replaced it wholesale |
-
-Four instruments about reasoning rather than knowledge are parked in
-`archive/`. They still validate and can be restored.
-
-## How it works, and why publishing it does not destroy it
-
-The suite ships a **generator and its templates, not an answer key**.
+Three benchmarks you can download and run against your own models. They test
+things the public leaderboards do not report: what a model actually knows
+about a versioned API and where that knowledge gives out, whether it can
+write geometry that is correct rather than merely plausible, and whether it
+can make a vehicle work under real physics and drive it somewhere.
 
 ```
-sources/     dated snapshots of vendor documentation
-templates    question shapes, in suite/generate.py
-generate.py  sources + shapes -> a fresh item set, seeded
-run.py       administers it, by API or by pasting
-score.py     scores mechanically against the source
-report.py    prints the breakage map
+git clone https://github.com/theisegoria/probe-suite
+cd probe-suite
+./probe doctor
 ```
 
-Every item's answer is read out of the source snapshot at generation time.
-There is no checked-in key to memorise, and two runs with different seeds ask
-different questions. A model can of course memorise the vendor documentation,
-and that is the point: memorising the vendor documentation *is* the knowledge
-under test.
+`doctor` tells you what is installed, what each benchmark needs, and which
+of the three you can run right now.
 
-So yes, this can be published and other people can run it against their own
-models. What they clone is the machinery. What they measure is drawn fresh.
+## The three
 
-**One caveat, stated plainly.** Refreshing a source snapshot is currently a
-documented manual step, not an automated fetch. `python3 suite/sources.py`
-prints every source URL and what it should say; `python3 suite/recheck.py`
-prints the same for the fixed cases. Automating the fetch is the obvious next
-step and was deliberately not shipped untested.
-
-## The axes
-
-One property varies at a time, so a drop localises its own cause.
-
-| axis | what it varies | what a drop means |
-|---|---|---|
-| `recency` | age of the surface, 2017 to 2026 | a cliff is the training cutoff |
-| `version-delta` | what changed between two versions | the superseded API dominates the training text |
-| `coverage` | popular calls against obscure corners | knows the tutorial, not the domain |
-| `depth` | four rungs on one surface it does know | surface memory: holds names, invents semantics |
-| `fabrication` | symbols that do not exist | generating from the shape of the API, not recalling |
-| `build` | a real task under a named version | whether it *uses* what it knows under pressure |
-
-The Vulkan items are the sharpest version-delta material available anywhere:
-39 extensions promoted to core across 1.3 and 1.4, each with an unarguable
-answer, plus 19 new commands and 17 new structures in 1.4. The second Vulkan
-template is the expensive one in practice: on a 1.4 device, do you still need
-to enable `VK_KHR_push_descriptor`? The answer is no, and a model that says
-yes has just written a silent portability bug.
-
-## The build task
-
-Recall questions ask whether a model holds an API. The build task asks
-whether it uses it. Five vehicle setup tasks, each naming PhysX 5.3, graded
-by harvesting every `Px…` symbol from the returned code and classifying it
-against the real symbol index:
-
-| classification | meaning |
-|---|---|
-| current | in 5.3 and not deprecated |
-| deprecated | in 5.3 but marked for removal, such as `PxVehicleDrive4W` |
-| wrong era | in 4.1 and not in 5.3, such as `PxVehicleUpdates` |
-| unrecognised | in neither index |
-
-`BUILD_WRONG_ERA` fires whether the answer named twenty old symbols or three,
-because a single `PxVehicleWheelsSimData` in a 5.3 answer settles the
-question. The report also prints **era purity**, the share of recognised
-symbols that are current, and which previous-version symbols the model
-reached for most often.
-
-Unrecognised symbols are reported as unrecognised, not as fabricated. The
-PhysX index covers the vehicle documentation for two releases, so absence
-from it is weaker evidence than a 404 against Apple's symbol graph, and the
-report says so where it matters.
-
-## Running it
+**Knowledge.** What does a model hold about Metal, Vulkan 1.3 against 1.4,
+and the PhysX vehicle API, where does it give out, and what does the shape
+of the failure say about why. Recency, version delta, coverage, depth, and
+symbols that do not exist. Ships a generator rather than an answer key, so
+publishing it does not destroy it: items are drawn fresh per seeded run and
+every answer is read out of a dated snapshot of vendor documentation.
+Needs only Python. [Details](docs/knowledge.md).
 
 ```
-python3 suite/selftest.py                    # prove the scoring discriminates
-python3 suite/generate.py --n 20 --seed 42   # draw an item set
-python3 suite/selftest.py generated/<set>.json   # prove that set is scoreable
-python3 suite/run.py --model paste --items generated/<set>.json
-python3 suite/report.py results/<tag>.json --judge
+./probe knowledge selftest
+./probe knowledge generate --n 20
+./probe knowledge run --model paste --items generated/<set>.json
 ```
 
-`--seed` reproduces a set exactly, for comparing like with like. Omit it for
-a fresh draw. The manual adapter needs no API access: it writes each prompt
-to `runs/<tag>/`, you paste and save the replies beside them, and re-running
-collects. With API access, fill in `config.yaml` and pass `--adapter` and
-`--effort`.
+**Procedural geometry.** The model writes one self-contained C++23 file that
+generates a mesh, writes it as an OBJ, and rasterises it with a renderer it
+also wrote. Standard library only: no mesh package, no image package, no
+GPU. Then it iterates against structured failures and the frame it produced.
+Correctness is arithmetic rather than opinion, because the geometry is
+checked as well as the pixels: a torus either has Euler characteristic zero
+or it does not. Needs a C++23 compiler. [Details](docs/mesh.md).
 
-The self-test synthesises the ideal and the failure response for every item
-and asserts each lands in the right bucket. It also checks that no accepted
-phrase is a substring of a forbidden one, which is not theoretical: it caught
-exactly that in the fixed set, where accepting "commit" would have scored
-"MTLCommandBuffer.commit" as correct and inverted the finding.
+```
+./probe mesh selftest
+./probe mesh run --model paste --task mr-01
+```
 
-## Designed, not built
+**Jeep test drive.** Not built yet. The suite will ship a terrain and a
+vehicle mesh, and the model has to make the vehicle work under PhysX 5 and
+drive it round an obstacle course. The physics substrate exists:
+`adaptors/physx-apple-silicon/` builds PhysX 5 on Apple Silicon, which
+upstream does not ship, and Linux and Windows use upstream presets.
 
-Two extensions were specified and deliberately left unbuilt rather than
-shipped half-working.
+## Results are ladders, not pass rates
 
-**A rendering and behaviour loop.** Partly built. `harness/` holds the
-mesh and render benchmark: the model writes one self-contained C++23 file
-that generates a mesh, writes it as an OBJ, and rasterises it with a
-renderer it also wrote, then iterates against structured failures and the
-frame it produced. Correctness is arithmetic rather than opinion, because
-the geometry is checked as well as the pixels: Euler characteristic,
-manifoldness, winding consistency, signed volume, shell count. Results are a
-graded ladder rather than a pass rate, and `harness/selftest_mesh.py` proves
-the ladder discriminates by breaking the reference solution one rung at a
-time. See `harness/README.md`.
+A pass rate collapses "did not compile" and "built a beautiful torus with
+inverted normals" into the same number. Every benchmark here reports the
+rung a model reached, because a model that stops at "closed 2-manifold" and
+never reaches "topology matches the spec" is making a different mistake from
+one that never compiles, and you want to know which.
 
-The Metal arm is not built. It is now known to be easy: Swift compiles MSL
-from source at runtime and renders offscreen with no window, so the harness
-gets compile diagnostics and a frame in process. The Codex texturing arm is
-not built either, and needs a tool-agnostic scorer for UV validity and
-evidence that the render samples the texture.
+## Every benchmark proves its own scoring first
 
-**Automated source refresh.** See the caveat above.
+This is the part worth copying even if you take nothing else. A scoring
+harness that reports "passed" for everything looks identical to a working
+one in a summary table, so each benchmark ships a self-test that breaks a
+known-good solution in one specific way per rung and asserts each mutant
+stops exactly where it should.
 
-Neither is stubbed out anywhere in the code. Nothing here pretends to do
-something it does not do.
+```
+./probe mesh selftest
+  ok    unmodified reference               rung 7 (expected 7)
+  ok    does not compile                   rung 0 (expected 0)
+  ok    compiles but exits non zero        rung 1 (expected 1)
+  ok    writes no geometry                 rung 2 (expected 2)
+  ok    open surface, not closed           rung 3 (expected 3)
+  ok    closed but normals inward          rung 4 (expected 4)
+  ok    geometry right, renders nothing    rung 5 (expected 5)
+  ok    renders a flat unlit silhouette    rung 6 (expected 6)
+```
 
-## What this cannot tell you
+It earns its keep. The mesh reference solution first stopped at rung 6 on a
+symmetry check, and the renderer was right: the predicate measured luminance
+symmetry, which an off-axis light legitimately breaks. The check now
+measures the silhouette against its own mirror. A reference solution is
+there to catch unsatisfiable tasks, and it caught one.
 
-**Absence is not equally provable across domains.** A 404 from Apple's feed
-is proof a symbol does not exist. Absence from the Vulkan appendix or the
-PhysX vehicle docs is not, so fabrication items are generated only for Metal.
+## Running against a model
 
-**The NOSUCHTHING verdict tips the model off** that some items may be fake,
-which puts the fabrication rate below what you would see in ordinary use. It
-is a floor, not an estimate. Not offering it would be worse: a model that
-correctly knows a symbol is fake would have no way to say so.
+Every benchmark defaults to a manual adapter that needs no API key at all:
+it writes each prompt to `runs/<tag>/`, you paste it into whatever you are
+testing and save the reply beside it, then re-run to collect and score. With
+API access, copy `config.example.yaml` to `config.yaml`, fill in the
+parameter shapes you have actually observed for your models, and pass
+`--adapter` and `--effort`.
 
-**Seeded draws are not interchangeable.** Two runs with different seeds ask
-different questions, so compare distributions across many items, or fix the
-seed. The report always states the denominator.
+## What is here
 
-**The generator inherits its snapshot's date.** An item generated from a
-stale snapshot is confidently wrong in exactly the way the instrument exists
-to detect, which would be an embarrassing way to be wrong. Refresh before a
-run that matters.
+```
+probe                     one entry point for everything
+suite/                    knowledge benchmark, and the shared runner
+harness/                  geometry benchmark: predicates, ladder, reference
+sources/                  dated snapshots of vendor documentation
+cases/                    task and item definitions
+adaptors/                 PhysX 5 for Apple Silicon
+archive/                  four instruments about reasoning rather than knowledge
+docs/                     the long form for each benchmark
+```
 
-**Three domains, one shape of knowledge.** All three are versioned APIs with
-published symbol graphs. Nothing here licenses a claim about the same model
-on physics, medicine, or anything whose ground truth is not a symbol list.
+## Requirements
+
+Python 3.8 or later for everything. PyYAML to read the task files. A C++23
+compiler for the geometry benchmark, verified on Apple clang 21. Pillow is
+optional and only converts frames for feedback. PhysX 5 for the jeep
+benchmark when it lands.
+
+MIT. PhysX itself is NVIDIA's, under its own licence, and nothing from its
+source tree is copied here.

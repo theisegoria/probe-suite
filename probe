@@ -1,0 +1,175 @@
+#!/usr/bin/env python3
+"""probe: three benchmarks you can run against your own models.
+
+  ./probe doctor              what is installed, and what each benchmark needs
+  ./probe knowledge --help    what a model knows about an API, and where it breaks
+  ./probe mesh --help         procedural geometry it writes and renders itself
+  ./probe jeep --help         drive a vehicle round a course under real physics
+
+Every benchmark has a self-test that proves its scoring discriminates before
+you spend a run on it. Start with `./probe doctor`.
+"""
+
+import os
+import shutil
+import subprocess
+import sys
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, ROOT)
+
+GREEN, RED, DIM, OFF = "\033[32m", "\033[31m", "\033[2m", "\033[0m"
+if not sys.stdout.isatty() or os.environ.get("NO_COLOR"):
+    GREEN = RED = DIM = OFF = ""
+
+
+def _mark(ok):
+    return (GREEN + "  yes" + OFF) if ok else (RED + "  no " + OFF)
+
+
+def _try_import(name):
+    try:
+        __import__(name)
+        return True
+    except ImportError:
+        return False
+
+
+def _cxx_ok():
+    cxx = os.environ.get("PROBE_CXX", "c++")
+    if not shutil.which(cxx):
+        return False, "%s not found" % cxx
+    src = os.path.join(ROOT, ".probe-cxx-check.cpp")
+    with open(src, "w", encoding="utf-8") as fh:
+        fh.write('#include <print>\n#include <ranges>\nint main(){std::println("ok");}\n')
+    exe = src + ".out"
+    try:
+        p = subprocess.run([cxx, "-std=c++23", src, "-o", exe],
+                           capture_output=True, text=True, timeout=90)
+        ok = p.returncode == 0
+        detail = "%s, C++23 accepted" % cxx if ok else (p.stderr.strip().splitlines() or ["failed"])[-1]
+    except Exception as e:
+        ok, detail = False, str(e)
+    finally:
+        for f in (src, exe):
+            try:
+                os.remove(f)
+            except OSError:
+                pass
+    return ok, detail
+
+
+def _physx_libs():
+    for base in (os.path.join(ROOT, "engines", "PhysX", "out-mac-arm64", "bin"),
+                 os.path.join(ROOT, "engines", "PhysX", "physx", "bin")):
+        for dirpath, _dirs, files in os.walk(base) if os.path.isdir(base) else []:
+            if any(f.startswith("libPhysXVehicle") for f in files):
+                return True, dirpath
+    return False, "not built, see adaptors/physx-apple-silicon/build.sh"
+
+
+def doctor(argv):
+    print("\nprobe suite: what is here and what it needs\n")
+    py_ok = sys.version_info >= (3, 8)
+    yaml_ok = _try_import("yaml")
+    pil_ok = _try_import("PIL")
+    cxx_ok, cxx_detail = _cxx_ok()
+    px_ok, px_detail = _physx_libs()
+
+    rows = [
+        ("python 3.8 or later", py_ok, "%d.%d.%d" % sys.version_info[:3]),
+        ("pyyaml", yaml_ok, "reads the task files" if yaml_ok else "pip install pyyaml"),
+        ("a C++23 compiler", cxx_ok, cxx_detail),
+        ("pillow", pil_ok, "converts frames for feedback" if pil_ok
+         else "optional: pip install pillow"),
+        ("PhysX 5 libraries", px_ok, px_detail),
+    ]
+    for label, ok, detail in rows:
+        print("  %s  %-22s %s%s%s" % (_mark(ok), label, DIM, detail, OFF))
+
+    print("\n  benchmark        can you run it now")
+    ready = [
+        ("knowledge", py_ok and yaml_ok,
+         "needs python and pyyaml" if not (py_ok and yaml_ok) else "yes"),
+        ("mesh", py_ok and yaml_ok and cxx_ok,
+         "needs a C++23 compiler" if not cxx_ok else "yes"),
+        ("jeep", False,
+         "not built yet. Substrate ready" if px_ok else "not built yet, and PhysX 5 is not compiled"),
+    ]
+    for name, ok, why in ready:
+        print("  %s  %-14s %s%s%s" % (_mark(ok), name, DIM, why, OFF))
+
+    print("""
+  next
+    ./probe knowledge selftest     prove the knowledge scoring discriminates
+    ./probe mesh selftest          prove the mesh ladder discriminates
+    ./probe knowledge generate     draw a fresh item set
+""")
+    return 0
+
+
+def _delegate(module, argv):
+    sys.argv = [module] + argv
+    mod = __import__(module.replace("/", "."), fromlist=["main"])
+    return mod.main() or 0
+
+
+def knowledge(argv):
+    if argv and argv[0] == "selftest":
+        return _delegate("suite.selftest", argv[1:])
+    if argv and argv[0] == "generate":
+        return _delegate("suite.generate", argv[1:])
+    if argv and argv[0] == "run":
+        return _delegate("suite.run", argv[1:])
+    if argv and argv[0] == "report":
+        return _delegate("suite.report", argv[1:])
+    if argv and argv[0] == "sources":
+        return _delegate("suite.sources", argv[1:])
+    print("usage: ./probe knowledge {selftest|generate|run|report|sources} [options]")
+    return 2
+
+
+def mesh(argv):
+    if argv and argv[0] == "selftest":
+        return _delegate("harness.selftest_mesh", argv[1:])
+    if argv and argv[0] == "run":
+        return _delegate("suite.mesh_loop", argv[1:])
+    print("usage: ./probe mesh {selftest|run} [options]")
+    return 2
+
+
+def jeep(argv):
+    print("""
+The jeep test drive is not built yet.
+
+Planned: the suite ships a terrain and a vehicle mesh, and the model has to
+make the vehicle work under PhysX 5 and drive it round an obstacle course.
+Graded on a ladder, as the mesh benchmark is: does it compile, does the
+vehicle rest on its wheels, does it respond to controls, does it finish the
+course, does it finish without rolling, does it finish inside the budget.
+
+The physics substrate exists. adaptors/physx-apple-silicon/ builds PhysX 5
+on Apple Silicon, which upstream does not ship, and Linux and Windows use
+upstream presets.
+""")
+    return 2
+
+
+COMMANDS = {"doctor": doctor, "knowledge": knowledge, "mesh": mesh, "jeep": jeep}
+
+
+def main():
+    argv = sys.argv[1:]
+    if not argv or argv[0] in ("-h", "--help", "help"):
+        print(__doc__)
+        return 0
+    cmd = COMMANDS.get(argv[0])
+    if not cmd:
+        print("unknown command %r\n" % argv[0])
+        print(__doc__)
+        return 2
+    return cmd(argv[1:])
+
+
+if __name__ == "__main__":
+    sys.exit(main())

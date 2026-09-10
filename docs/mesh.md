@@ -1,3 +1,5 @@
+[Back to the suite](../README.md)
+
 # Mesh and render: can the model build the thing, not just describe it
 
 The model writes one self-contained C++23 file. When run, it must generate a
