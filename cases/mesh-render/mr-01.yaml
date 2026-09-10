@@ -1,0 +1,41 @@
+id: mr-01
+title: Torus
+obj: scene.obj
+render: render.ppm
+prompt: >
+  Write a single self-contained C++23 source file, compiled with
+  c++ -std=c++23 -O2 and no libraries beyond the standard library.
+
+  It must do two things when run, writing both files into the current
+  working directory.
+
+  First, generate a torus as a triangle mesh and write it to scene.obj in
+  Wavefront OBJ format. Major radius 2.0, minor radius 0.6, 48 segments
+  around the major circle and 24 around the tube. The tube axis is the y
+  axis, so the hole faces along y. The surface must be closed, every edge
+  shared by exactly two triangles, winding consistent, and normals facing
+  outward.
+
+  Second, render that mesh yourself to render.ppm, a binary P6 PPM at
+  512 by 512. Write your own rasteriser: project the vertices, fill the
+  triangles, use a depth buffer, and shade with a Lambert term from a
+  single directional light. Place the camera on the y axis side, above the
+  torus and tilted, so that the hole is visible in the image and the
+  picture is left to right symmetric. Use a uniform background colour that
+  is clearly different from the lit surface.
+geometry:
+  closed_manifold: true
+  euler_characteristic: 0
+  shells: 1
+  normals_outward: true
+  max_degenerate: 0
+  vertex_count: {min: 1100, max: 1200}
+  bbox:
+    min: [-2.6, -0.6, -2.6]
+    max: [2.6, 0.6, 2.6]
+    tol: 0.06
+image:
+  coverage: {min: 0.05, max: 0.75}
+  min_shading_spread: 8.0
+  background_components: 2
+  min_silhouette_mirror: 0.97

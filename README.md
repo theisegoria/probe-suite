@@ -116,23 +116,22 @@ exactly that in the fixed set, where accepting "commit" would have scored
 Two extensions were specified and deliberately left unbuilt rather than
 shipped half-working.
 
-**A rendering and behaviour loop.** The model writes a shader or a vehicle
-setup, a harness compiles and runs it, and the model iterates against
-structured failures and the rendered frame until it converges, with
-iterations-to-convergence as the metric. The graphics half is
-straightforward: a Mac has a real Metal compiler, and headless Chromium
-gives a portable WebGL arm.
+**A rendering and behaviour loop.** Partly built. `harness/` holds the
+mesh and render benchmark: the model writes one self-contained C++23 file
+that generates a mesh, writes it as an OBJ, and rasterises it with a
+renderer it also wrote, then iterates against structured failures and the
+frame it produced. Correctness is arithmetic rather than opinion, because
+the geometry is checked as well as the pixels: Euler characteristic,
+manifoldness, winding consistency, signed volume, shell count. Results are a
+graded ladder rather than a pass rate, and `harness/selftest_mesh.py` proves
+the ladder discriminates by breaking the reference solution one rung at a
+time. See `harness/README.md`.
 
-The vehicle half needed PhysX built for Apple Silicon, which upstream does
-not ship. `adaptors/physx-apple-silicon/` now does that: eight static
-libraries, arm64, zero errors, with a smoke test that solves sprung masses
-through the NEON vecmath path and matches the lever arm prediction exactly.
-The adaptor's README explains what was already in the SDK and what the five
-source fixes enable. So the substrate exists; the loop harness on top of it
-does not yet.
-
-PyBullet or MuJoCo would give real vehicle dynamics for one pip install, at
-the cost of no longer testing PhysX.
+The Metal arm is not built. It is now known to be easy: Swift compiles MSL
+from source at runtime and renders offscreen with no window, so the harness
+gets compile diagnostics and a frame in process. The Codex texturing arm is
+not built either, and needs a tool-agnostic scorer for UV validity and
+evidence that the render samples the texture.
 
 **Automated source refresh.** See the caveat above.
 
