@@ -1,0 +1,105 @@
+id: jd-01
+title: Jeep test drive
+trace: trace.csv
+prompt: |
+  Write a single self-contained C++ source file that makes a four wheeled
+  vehicle work under PhysX 5 and drives it around a course. It will be
+  compiled against the PhysX 5 SDK, which is already built. The harness
+  supplies the include path and links PhysXExtensions, PhysXVehicle,
+  PhysX, PhysXPvdSDK, PhysXCooking, PhysXCommon and PhysXFoundation
+  statically, with PX_PHYSX_STATIC_LIB defined. Include what you need from
+  PxPhysicsAPI.h and vehicle/PxVehicleAPI.h. The vehicle types live in
+  namespace physx.
+
+  PhysX's own vehicle snippet helpers are compiled in and on the include
+  path, so "base/Base.h", "enginedrivetrain/EngineDrivetrain.h" and
+  "physxintegration/PhysXIntegration.h" are available, giving you
+  snippetvehicle::BaseVehicleParams, snippetvehicle::EngineDriveVehicle and
+  snippetvehicle::setPhysXIntegrationParams. Use them, or build the
+  component sequence yourself, whichever you prefer. Do not try to read
+  NVIDIA's JSON vehicle data: the parameters below are the ones to hit and
+  the JSON is not shipped with the task.
+
+  ASSETS, relative to the working directory
+    assets/terrain.obj   the ground, a triangle mesh. The axis convention
+                         is the one PhysX's own vehicle snippets use: z is
+                         longitudinal, x is lateral, y is vertical. The
+                         course runs along +z. Cook it into a PhysX
+                         triangle mesh and add it as a static actor.
+    assets/jeep.obj      the vehicle body, for reference only. The physics
+                         uses the dimensions below, not this mesh.
+
+  THE VEHICLE
+    chassis mass 1500 kg, box 1.80 wide by 0.80 tall by 3.80 long,
+      centre of mass 0.10 m below the box centre
+    four wheels, radius 0.36 m, width 0.30 m, mass 20 kg each
+    wheel centres, relative to the centre of mass, in metres
+      front left   (-0.86, -0.52,  1.35)
+      front right  ( 0.86, -0.52,  1.35)
+      rear left    (-0.86, -0.52, -1.35)
+      rear right   ( 0.86, -0.52, -1.35)
+    suspension travel 0.25 m, sprung to sit near a third of its travel
+      under its own weight, damping enough that it does not oscillate
+    tire friction 1.0 against the terrain
+    engine drive, four wheel drive, peak torque around 600 Nm, four
+      forward gears, automatic shifting is fine
+    only the front wheels steer, maximum 35 degrees
+    gravity -9.81 on y
+
+  THE RUN
+    Spawn the vehicle upright at x = 0, z = 0, facing +z, high enough that it is
+    clear of the ground, and let it settle. Do not apply throttle, brake
+    or steering before t = 2.0 s.
+
+    Then drive it through these waypoints in order. A waypoint counts when
+    the chassis origin comes within its radius, measured in the x and z
+    plane only.
+      1  z = 10.0  x =  0.0  radius 3.0
+      2  z = 24.0  x =  4.0  radius 3.0
+      3  z = 40.0  x =  0.0  radius 3.5
+      4  z = 56.0  x = -4.0  radius 3.5
+      5  z = 70.0  x =  0.0  radius 4.0
+
+    There is a ramp between z = 26 and z = 38 peaking about 1.4 m, and a
+    cross slope between z = 48 and z = 62 that will roll a vehicle taken
+    too fast. Finish within 60 seconds of simulated time and stop
+    stepping once waypoint 5 is reached, or at t = 90 s, whichever comes
+    first.
+
+    Step the simulation at a fixed 1/60 s. Write your controller yourself:
+    it may look at the vehicle state each tick.
+
+  OUTPUT
+    Write trace.csv into the working directory, one row per simulation
+    tick, with this header exactly:
+
+      t,px,py,pz,qx,qy,qz,qw,speed,wheels_grounded,throttle,brake,steer
+
+    The trace is all the scorer sees, so the row for the tick at which the
+    last waypoint is reached has to be in the file. Write the row first and
+    stop after it, not before it.
+
+    t is simulated seconds, px py pz is the chassis origin in world space,
+    qx qy qz qw is the chassis orientation as a quaternion, speed is
+    forward speed in m/s, wheels_grounded is how many wheels are touching
+    the ground, and throttle, brake and steer are the inputs you applied
+    that tick.
+waypoints:
+  - {x: 0.0, z: 10.0, radius: 3.0}
+  - {x: 4.0, z: 24.0, radius: 3.0}
+  - {x: 0.0, z: 40.0, radius: 3.5}
+  - {x: -4.0, z: 56.0, radius: 3.5}
+  - {x: 0.0, z: 70.0, radius: 4.0}
+bounds: {xmin: -10.0, xmax: 10.0, zmin: -12.0, zmax: 80.0, ymin: -5.0, ymax: 12.0}
+checks:
+  rest:
+    until_t: 2.0
+    max_drift: 0.60
+    max_tilt_deg: 12.0
+    spawn_y_band: [0.10, 3.0]
+  responds:
+    min_speed: 1.5
+    min_heading_change_deg: 20.0
+  finish:
+    max_tilt_deg: 55.0
+    time_budget_s: 60.0

@@ -44,11 +44,21 @@ or it does not. Needs a C++23 compiler. [Details](docs/mesh.md).
 ./probe mesh run --model paste --task mr-01
 ```
 
-**Jeep test drive.** Not built yet. The suite will ship a terrain and a
-vehicle mesh, and the model has to make the vehicle work under PhysX 5 and
-drive it round an obstacle course. The physics substrate exists:
-`adaptors/physx-apple-silicon/` builds PhysX 5 on Apple Silicon, which
-upstream does not ship, and Linux and Windows use upstream presets.
+**Jeep test drive.** The suite ships a terrain and a vehicle mesh, and the
+model has to make the vehicle work under PhysX 5 and drive it through five
+waypoints over a ramp and a cross slope. One self-contained C++ file, built
+against the real SDK. This is the one that tests whether a model can work
+inside somebody else's large versioned API rather than recite it, and the
+ladder separates a vehicle that will not sit still from one that will not
+steer from one that rolls on the slope. Needs a built PhysX 5;
+`adaptors/physx-apple-silicon/` builds it on Apple Silicon, which upstream
+does not, and Linux and Windows use upstream presets.
+[Details](docs/jeep.md).
+
+```
+./probe jeep selftest
+./probe jeep run --model paste --task jd-01
+```
 
 ## Results are ladders, not pass rates
 
@@ -67,6 +77,18 @@ known-good solution in one specific way per rung and asserts each mutant
 stops exactly where it should.
 
 ```
+./probe jeep selftest
+  ok    unmodified reference               rung 7 (expected 7)
+  ok    does not compile                   rung 0 (expected 0)
+  ok    compiles but exits non zero        rung 1 (expected 1)
+  ok    writes no trajectory               rung 2 (expected 2)
+  ok    spawned too high, still falling    rung 3 (expected 3)
+  ok    never applies throttle             rung 4 (expected 4)
+  ok    steers the wrong way               rung 5 (expected 5)
+  ok    gets round, but far too slowly     rung 6 (expected 6)
+```
+
+```
 ./probe mesh selftest
   ok    unmodified reference               rung 7 (expected 7)
   ok    does not compile                   rung 0 (expected 0)
@@ -81,8 +103,12 @@ stops exactly where it should.
 It earns its keep. The mesh reference solution first stopped at rung 6 on a
 symmetry check, and the renderer was right: the predicate measured luminance
 symmetry, which an off-axis light legitimately breaks. The check now
-measures the silhouette against its own mirror. A reference solution is
-there to catch unsatisfiable tasks, and it caught one.
+measures the silhouette against its own mirror. The jeep reference then
+found two more: a terrain whose triangles were wound so their normals
+pointed downwards, invisible to the raycast the suspension uses, and a
+finish that was never written to the trace because the program stopped one
+tick too early. A reference solution is there to catch unsatisfiable tasks,
+and between them they caught three.
 
 ## Running against a model
 
@@ -98,7 +124,8 @@ parameter shapes you have actually observed for your models, and pass
 ```
 probe                     one entry point for everything
 suite/                    knowledge benchmark, and the shared runner
-harness/                  geometry benchmark: predicates, ladder, reference
+harness/                  geometry and jeep benchmarks: predicates, ladders, references
+assets/                   the terrain and the jeep, and the generator that makes them
 sources/                  dated snapshots of vendor documentation
 cases/                    task and item definitions
 adaptors/                 PhysX 5 for Apple Silicon
@@ -110,8 +137,8 @@ docs/                     the long form for each benchmark
 
 Python 3.8 or later for everything. PyYAML to read the task files. A C++23
 compiler for the geometry benchmark, verified on Apple clang 21. Pillow is
-optional and only converts frames for feedback. PhysX 5 for the jeep
-benchmark when it lands.
+optional and only converts frames for feedback. A built PhysX 5 for the jeep
+benchmark.
 
 MIT. PhysX itself is NVIDIA's, under its own licence, and nothing from its
 source tree is copied here.

@@ -16,3 +16,6 @@ __pycache__/
 # compiled smoke test binary
 adaptors/physx-apple-silicon/smoke
 harness/reference/*.o
+
+# a trace left behind by running a reference by hand
+/trace.csv

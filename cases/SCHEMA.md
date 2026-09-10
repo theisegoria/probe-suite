@@ -5,6 +5,67 @@ relative to `fixtures/`. Every `id` must be unique across the whole suite.
 
 Run `python3 suite/schema.py` to validate every case file.
 
+The two live instruments are `mesh-render` and `jeep`. The four below them
+are the parked reasoning instruments, kept because their case format is
+still the one `archive/` expects.
+
+## mesh-render
+
+```yaml
+id: mr-01                       # unique
+title: Torus                    # shown in the results table
+obj: scene.obj                  # the geometry file the program must write
+render: render.ppm              # the frame the program must write
+prompt: |                       # given to the model verbatim
+  ...
+geometry:                       # rungs 4 and 5, checked once the OBJ parses
+  closed_manifold: true
+  euler_characteristic: 0       # 2 for a sphere, 0 for a torus
+  shells: 1
+  normals_outward: true
+  max_degenerate: 0
+  vertex_count: {min: 1100, max: 1200}
+  bbox: {min: [-2.6, -0.6, -2.6], max: [2.6, 0.6, 2.6], tol: 0.06}
+image:                          # rungs 6 and 7, checked once the frame parses
+  coverage: {min: 0.05, max: 0.75}
+  min_shading_spread: 8.0       # catches a filled silhouette that is never lit
+  background_components: 2      # a torus drawn as a disc has one
+  min_silhouette_mirror: 0.97   # mask against its own mirror
+```
+
+A geometry block that no mesh can satisfy is the one way this instrument
+breaks silently, which is why a reference solution has to reach rung 7
+before the task is used.
+
+## jeep
+
+```yaml
+id: jd-01
+title: Jeep test drive
+trace: trace.csv                # the file the program must write
+prompt: |
+  ...
+waypoints:                      # in order; a hit is measured in x and z only
+  - {x: 0.0, z: 10.0, radius: 3.0}
+bounds: {xmin: -10.0, xmax: 10.0, zmin: -12.0, zmax: 80.0, ymin: -5.0, ymax: 12.0}
+checks:
+  rest:                         # rung 4: before anything is driven
+    until_t: 2.0
+    max_drift: 0.60             # metres the chassis may move while settling
+    max_tilt_deg: 12.0
+    spawn_y_band: [0.10, 3.0]   # catches falling through, and floating
+  responds:                     # rung 5: is it actually wired to its controls
+    min_speed: 1.5
+    min_heading_change_deg: 20.0
+  finish:                       # rung 7: and did it survive
+    max_tilt_deg: 55.0
+    time_budget_s: 60.0
+```
+
+Everything is read from the trace, so a course the vehicle finishes without
+writing the arriving tick counts as unfinished. The prompt says so, and the
+reference writes the row before it stops.
+
 ## wrong-context
 
 ```yaml

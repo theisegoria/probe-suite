@@ -93,8 +93,9 @@ def doctor(argv):
          "needs python and pyyaml" if not (py_ok and yaml_ok) else "yes"),
         ("mesh", py_ok and yaml_ok and cxx_ok,
          "needs a C++23 compiler" if not cxx_ok else "yes"),
-        ("jeep", False,
-         "not built yet. Substrate ready" if px_ok else "not built yet, and PhysX 5 is not compiled"),
+        ("jeep", py_ok and yaml_ok and cxx_ok and px_ok,
+         "needs a C++ compiler" if not cxx_ok else
+         ("needs PhysX 5 built, see adaptors/physx-apple-silicon/" if not px_ok else "yes")),
     ]
     for name, ok, why in ready:
         print("  %s  %-14s %s%s%s" % (_mark(ok), name, DIM, why, OFF))
@@ -103,6 +104,7 @@ def doctor(argv):
   next
     ./probe knowledge selftest     prove the knowledge scoring discriminates
     ./probe mesh selftest          prove the mesh ladder discriminates
+    ./probe jeep selftest          prove the jeep ladder discriminates
     ./probe knowledge generate     draw a fresh item set
 """)
     return 0
@@ -139,19 +141,11 @@ def mesh(argv):
 
 
 def jeep(argv):
-    print("""
-The jeep test drive is not built yet.
-
-Planned: the suite ships a terrain and a vehicle mesh, and the model has to
-make the vehicle work under PhysX 5 and drive it round an obstacle course.
-Graded on a ladder, as the mesh benchmark is: does it compile, does the
-vehicle rest on its wheels, does it respond to controls, does it finish the
-course, does it finish without rolling, does it finish inside the budget.
-
-The physics substrate exists. adaptors/physx-apple-silicon/ builds PhysX 5
-on Apple Silicon, which upstream does not ship, and Linux and Windows use
-upstream presets.
-""")
+    if argv and argv[0] == "selftest":
+        return _delegate("harness.selftest_jeep", argv[1:])
+    if argv and argv[0] == "run":
+        return _delegate("suite.jeep_loop", argv[1:])
+    print("usage: ./probe jeep {selftest|run} [options]")
     return 2
 
 
