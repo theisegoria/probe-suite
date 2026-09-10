@@ -123,29 +123,13 @@ iterations-to-convergence as the metric. The graphics half is
 straightforward: a Mac has a real Metal compiler, and headless Chromium
 gives a portable WebGL arm.
 
-The vehicle half needs PhysX built for Apple Silicon, which upstream does
-not ship. It is a bounded adaptor rather than a port, and the source is
-closer to it than the preset list suggests:
-
-- Platform detection is intact. `PxPreprocessor.h` sets `PX_OSX` from
-  `__APPLE__`, and defines `PX_APPLE_FAMILY` and `PX_UNIX_FAMILY` so Apple
-  is already inside the Unix family.
-- The Unix paths already branch on it. `PxUnixFPU.h` guards on
-  `PX_LINUX || PX_OSX`, not on Linux alone.
-- NEON selection is architectural, not per-platform. `PX_NEON` comes from
-  `__ARM_NEON`, which Apple clang defines on Apple Silicon, and the NEON
-  headers sit under the Unix family.
-- The build system still accepts a mac target.
-  `GetCompilerAndPlatform.cmake` has a `TARGET_BUILD_PLATFORM STREQUAL
-  "mac"` branch and `cmake_generate_projects.py` maps `mac64` onto it.
-  22 files across the SDK still reference `PX_APPLE`, `PX_OSX` or
-  `__APPLE__`.
-
-What is missing is the build wiring: a `mac-aarch64-clang` preset, a
-`source/compiler/cmake/mac/` directory mirroring the Linux one (15 files,
-about 1100 lines, most of it near-identical under clang), and an arm64
-branch where `GetCompilerAndPlatform.cmake` currently hardcodes
-`mac.x86_${LIBPATH_SUFFIX}`. Plus whatever the first build turns up.
+The vehicle half needed PhysX built for Apple Silicon, which upstream does
+not ship. `adaptors/physx-apple-silicon/` now does that: eight static
+libraries, arm64, zero errors, with a smoke test that solves sprung masses
+through the NEON vecmath path and matches the lever arm prediction exactly.
+The adaptor's README explains what was already in the SDK and what the five
+source fixes enable. So the substrate exists; the loop harness on top of it
+does not yet.
 
 PyBullet or MuJoCo would give real vehicle dynamics for one pip install, at
 the cost of no longer testing PhysX.

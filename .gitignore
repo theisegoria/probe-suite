@@ -12,3 +12,6 @@ engines/
 __pycache__/
 *.pyc
 .DS_Store
+
+# compiled smoke test binary
+adaptors/physx-apple-silicon/smoke
